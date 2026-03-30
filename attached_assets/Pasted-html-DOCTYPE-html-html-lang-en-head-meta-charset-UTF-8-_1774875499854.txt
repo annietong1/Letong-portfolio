@@ -1,0 +1,668 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>佟乐 (Le Tong) · UX Designer Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #171717;
+            line-height: 1.4;
+            scroll-behavior: smooth;
+        }
+
+        /* modern reset & typography */
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 8vw, 4.8rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 2rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subhead {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b6b6b;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* nav */
+        .navbar {
+            padding: 1.6rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #111, #3a3a3a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2c2c2c;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #000;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        /* buttons */
+        .btn {
+            display: inline-block;
+            background: #000;
+            color: white;
+            padding: 0.7rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ccc;
+            color: #111;
+        }
+
+        .btn-outline:hover {
+            border-color: #000;
+            background: #f5f5f5;
+        }
+
+        .btn:hover {
+            background: #2c2c2c;
+            transform: translateY(-2px);
+        }
+
+        /* hero */
+        .hero {
+            padding: 3rem 0 4rem 0;
+        }
+
+        .hero-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+
+        .hero-content {
+            flex: 2;
+            min-width: 260px;
+        }
+
+        .hero-tagline {
+            font-size: 1.2rem;
+            color: #3a3a3a;
+            max-width: 560px;
+            margin: 1rem 0 1.8rem 0;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .highlight-badge {
+            display: inline-block;
+            background: #f2f2f2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-right: 0.6rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.8rem;
+        }
+
+        /* cards & sections */
+        section {
+            padding: 4rem 0;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .exp-card, .project-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.6rem;
+            transition: all 0.25s ease;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .exp-card:hover, .project-card:hover {
+            transform: translateY(-6px);
+            border-color: #e0e0e0;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.08);
+        }
+
+        .exp-company {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .exp-role {
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 0.3rem;
+        }
+
+        .exp-date {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            margin-bottom: 1rem;
+            border-left: 2px solid #ddd;
+            padding-left: 0.6rem;
+        }
+
+        .exp-desc {
+            font-size: 0.9rem;
+            color: #3e3e3e;
+            margin-top: 0.8rem;
+            padding-left: 0;
+            list-style-position: inside;
+        }
+
+        .exp-desc li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-metrics {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1e6f3f;
+            background: #eef9f0;
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin: 0.6rem 0;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            background: #f2f2f2;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            color: #444;
+        }
+
+        .award-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .award-badge {
+            background: #f9f9f9;
+            border: 1px solid #ececec;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .inline-icon {
+            margin-right: 6px;
+            color: #3b3b3b;
+        }
+
+        footer {
+            padding: 3rem 0 4rem;
+            text-align: center;
+            color: #6c6c6c;
+            font-size: 0.85rem;
+        }
+
+        .social-links a {
+            color: #2c2c2c;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        .social-links a:hover {
+            color: #000;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .hero-grid {
+                flex-direction: column;
+            }
+            section {
+                padding: 3rem 0;
+            }
+        }
+
+        /* micro-interactions */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar">
+        <div class="logo">佟乐 / Le Tong</div>
+        <div class="nav-links">
+            <a href="#work">Work</a>
+            <a href="#projects">Projects</a>
+            <a href="#experience">Experience</a>
+            <a href="#education">Education</a>
+            <a href="#awards">Awards</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+</div>
+
+<main>
+    <!-- Hero Section -->
+    <div class="container hero">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="section-subhead">UX Designer · Product Design</div>
+                <h1>Crafting data-driven<br>experiences with soul.</h1>
+                <div class="hero-tagline">
+                    2+ years experience in E-commerce & global platforms. Passionate about AIGC, interaction design, and elevating user journeys.
+                </div>
+                <div>
+                    <span class="highlight-badge">🏆 30+ Design Awards</span>
+                    <span class="highlight-badge">📊 Data-driven · UX</span>
+                    <span class="highlight-badge">🤖 AIGC Workflow</span>
+                    <span class="highlight-badge">🌏 Global perspective</span>
+                </div>
+                <div class="contact-buttons">
+                    <a href="#contact" class="btn">Get in touch</a>
+                    <a href="#projects" class="btn btn-outline">View projects ↓</a>
+                </div>
+            </div>
+            <div style="flex:1; min-width: 180px;">
+                <div style="background: #f5f5f5; border-radius: 32px; padding: 1.5rem; text-align: center;">
+                    <i class="fas fa-star" style="font-size: 2rem; color: #222;"></i>
+                    <p style="margin-top: 1rem; font-weight: 500;">“Design with empathy,<br>scale with data.”</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">CET-6</span>
+                        <span class="tag">全链路设计</span>
+                        <span class="tag">Design System</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <div class="section-subhead">Career path</div>
+            <h2>Work experience</h2>
+            <div class="card-grid" id="experience-list"></div>
+        </div>
+    </section>
+
+    <!-- Featured Projects (作品集) -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-subhead">Selected projects</div>
+            <h2>Impactful product stories</h2>
+            <div class="card-grid" id="projects-list"></div>
+        </div>
+    </section>
+
+    <!-- Education + Personal Strengths -->
+    <section id="education">
+        <div class="container">
+            <div class="section-subhead">Background</div>
+            <h2>Education & expertise</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+                <div style="flex: 1; min-width: 240px;">
+                    <div class="exp-card" style="margin-bottom: 0;">
+                        <h3 style="margin-bottom: 0.5rem;">🎓 Beijing University of Science & Technology</h3>
+                        <p style="font-weight: 500;">M.A. Design · Interaction Design</p>
+                        <p style="color: #6b6b6b;">2021 – 2024 | GPA: Top tier, 1st class scholarship</p>
+                    </div>
+                    <div class="exp-card" style="margin-top: 1rem;">
+                        <h3 style="margin-bottom: 0.5rem;">✈️ Shenyang Aerospace University</h3>
+                        <p style="font-weight: 500;">B.E. Industrial Design (Interaction & Experience)</p>
+                        <p style="color: #6b6b6b;">2016 – 2020 | Outstanding Graduate of Liaoning Province</p>
+                    </div>
+                </div>
+                <div style="flex: 1.5; min-width: 260px;">
+                    <div class="exp-card">
+                        <h3>⚡ Core strengths</h3>
+                        <ul style="margin-top: 0.8rem; list-style: none; line-height: 1.6;">
+                            <li>🔍 · Competitive analysis library & global insights</li>
+                            <li>📈 · Data-informed design: A/B testing, conversion uplift</li>
+                            <li>🎨 · AIGC acceleration (Midjourney, Stable Diffusion)</li>
+                            <li>🤝 · Cross-functional leadership & design system ownership</li>
+                            <li>🌐 · Bilingual: Chinese native, English CET-6 (business fluent)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awards Section -->
+    <section id="awards">
+        <div class="container">
+            <div class="section-subhead">Recognition</div>
+            <h2>Awards & honors</h2>
+            <div class="award-list" id="award-list"></div>
+        </div>
+    </section>
+
+    <!-- Contact Footer -->
+    <footer id="contact">
+        <div class="container">
+            <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Let's connect</h3>
+            <p style="margin-bottom: 1rem;">
+                <i class="fas fa-envelope"></i> <a href="mailto:906074545@qq.com" style="color:#111; text-decoration: none;">906074545@qq.com</a> &nbsp;&nbsp;|&nbsp;
+                <i class="fas fa-phone-alt"></i> <a href="tel:+8618842417092" style="color:#111; text-decoration: none;">+86 18842417092</a>
+            </p>
+            <div class="social-links">
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p style="margin-top: 2rem;">© 2025 佟乐 (Le Tong) — Designed with intention & curiosity</p>
+        </div>
+    </footer>
+</main>
+
+<script>
+    // DATA-DRIVEN CONTENT — easy to update & maintain
+    const experiences = [
+        {
+            company: "Kuaishou · 快手",
+            role: "UX Designer · E-commerce Design Center",
+            period: "2024.07 – 2026.03",
+            highlights: [
+                "Led live-streaming room redesign: built scalable framework, increased entry rate by +1.145% via modular card testing.",
+                "Optimized brand product display → entry rate +0.334%; 'building block card' unified visual hierarchy → entry rate +0.613%.",
+                "Review & comment full-chain revamp: AI-assisted writing + image upload, boosted payment conversion +0.352% and effective reviews +2.902%.",
+                "618 & Double 11 leaderboard UI, design system component (navigation bar) owner, team coordination."
+            ]
+        },
+        {
+            company: "ByteDance · 字节跳动",
+            role: "Product Design Intern (Ads & Commerce)",
+            period: "2022.10 – 2024.03",
+            highlights: [
+                "Designed livestream &短视频 ad formats: improved product cards, contributed to Adv+ +0.99% and GMV +0.66%; industry template boosted CVR +20%.",
+                "Search Ads: integrated e-commerce ads into general & vertical search, built design specifications collaborating with 5+ teams.",
+                "0→1 AR try-on (automotive & beauty) for feed ads, sold to BMW etc, estimated $3.2M first-year revenue.",
+                "Ad quality experience: optimized feedback loop, increased survey recovery rate by 18%."
+            ]
+        },
+        {
+            company: "ByteDance · 字节跳动",
+            role: "Interaction Design Intern (Global E-commerce)",
+            period: "2022.05 – 2022.09",
+            highlights: [
+                "Led Indonesia Independence Day (S级) H5 main venue: streamlined info hierarchy, increased new user GMV +2.715% & conversion +4.54%.",
+                "Researched cross-cultural design patterns for Southeast Asia, contributed to mega-sale strategies.",
+                "Co-authored UK localized marketing design white paper."
+            ]
+        },
+        {
+            company: "Tencent · 腾讯",
+            role: "Interaction Design Intern",
+            period: "2020.04 – 2020.08",
+            highlights: [
+                "Designed game interfaces for 'The Legend of Qin' world: delivered high-quality interaction flows & bug fixes.",
+                "Built game component library from scratch, improved development handoff efficiency by 30% and ensured consistency."
+            ]
+        }
+    ];
+
+    const projects = [
+        {
+            title: "Simplified Live Room · 简易直播间",
+            desc: "Re-architected lightweight streaming interface with modular cards to test marketing drivers. Increased entry rate by +1.145% and conversion lift.",
+            metrics: "进间率 +1.145% · 转化效率显著提升",
+            tags: ["A/B Testing", "Design System", "E-commerce"]
+        },
+        {
+            title: "Review-Guided Purchase & Write-review Loop",
+            desc: "End-to-end redesign of rating & review experience, leveraging AI to lower writing friction. Drove +0.352% payment conversion and +2.9% valid reviews.",
+            metrics: "支付转化率 +0.352% · 有效评价 +2.9%",
+            tags: ["AI-assisted", "UX Research", "Conversion"]
+        },
+        {
+            title: "618 / 11.11 Leaderboard Campaign",
+            desc: "High-fidelity UI for mega-sale leaderboard landing pages, applied gamification and kinetic micro-interactions to boost retention.",
+            metrics: "参与大促玩法落地 · 视觉统一性提升",
+            tags: ["Visual Design", "Campaign", "Interaction"]
+        },
+        {
+            title: "AR Try-on Ads (BMW & Beauty)",
+            desc: "From 0 to 1 for AR filter ads on Feed, conducted competitive analysis and delivered high-fidelity prototypes. Sold to premium brands.",
+            metrics: "首年预估收益 $3.2M · 0→1落地",
+            tags: ["AR/VR", "Innovation", "Product Strategy"]
+        },
+        {
+            title: "Search Ads Framework @ ByteDance",
+            desc: "Collaborated with search & e-commerce teams to design unified search ad assets, built scalable component specs.",
+            metrics: "搭建搜索广告设计规范 · 多端复用",
+            tags: ["Search Experience", "Design Ops", "Scalability"]
+        },
+        {
+            title: "Indonesia Independence Day H5",
+            desc: "Full-cycle interaction for S-level event: optimized information hierarchy for new user conversion, boosted GMV +2.7%.",
+            metrics: "新客GMV +2.715% · 转化率+4.54%",
+            tags: ["Cross-Culture", "Localization", "H5"]
+        }
+    ];
+
+    const awards = [
+        "UXDA International用户体验大赛 全国三等奖",
+        "全国大学生计算机设计大赛 全国三等奖",
+        "辽宁省大学生计算机设计大赛 省一等奖",
+        "三星手机主题设计大赛 入围奖",
+        "北京科技大学 优秀学生干部 & 研究生一等奖学金",
+        "辽宁省优秀毕业生 · 沈阳市优秀大学生",
+        "互联网+大赛 省级铜奖 · 创青春 省级铜奖",
+        "国家励志奖学金 (2次) · 校综合奖学金6次",
+        "支教活动 省级重点实践团队 · 校示范团队",
+        "30+ 设计/学术荣誉累计"
+    ];
+
+    function renderExperiences() {
+        const container = document.getElementById('experience-list');
+        if (!container) return;
+        container.innerHTML = experiences.map(exp => `
+            <div class="exp-card fade-up">
+                <div class="exp-company">${exp.company}</div>
+                <div class="exp-role">${exp.role}</div>
+                <div class="exp-date">${exp.period}</div>
+                <ul class="exp-desc" style="list-style-type: disc; padding-left: 1.2rem;">
+                    ${exp.highlights.map(point => `<li>${point}</li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    function renderProjects() {
+        const container = document.getElementById('projects-list');
+        if (!container) return;
+        container.innerHTML = projects.map(proj => `
+            <div class="project-card fade-up">
+                <div class="project-title">${proj.title}</div>
+                <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #3d3d3d;">${proj.desc}</p>
+                <div class="project-metrics">📊 ${proj.metrics}</div>
+                <div class="tag-list">
+                    ${proj.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderAwards() {
+        const container = document.getElementById('award-list');
+        if (!container) return;
+        container.innerHTML = awards.map(award => `<span class="award-badge">🏅 ${award}</span>`).join('');
+    }
+
+    // smooth scroll reveal on scroll (fade-up)
+    function initScrollReveal() {
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -20px 0px" });
+        fadeElements.forEach(el => observer.observe(el));
+        // additionally manually add visible to elements already visible
+        fadeElements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100) {
+                el.classList.add('visible');
+                observer.unobserve(el);
+            }
+        });
+    }
+
+    // dynamic add fade-up class to all cards after render
+    function addFadeUpToCards() {
+        const cards = document.querySelectorAll('.exp-card, .project-card, .award-badge');
+        cards.forEach(card => {
+            if (!card.classList.contains('fade-up')) card.classList.add('fade-up');
+        });
+        initScrollReveal();
+    }
+
+    // Helper: make nav links smooth
+    document.querySelectorAll('.nav-links a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+
+    // render all dynamic sections
+    renderExperiences();
+    renderProjects();
+    renderAwards();
+    // after dom render, attach fade-up classes and trigger observer
+    setTimeout(() => {
+        addFadeUpToCards();
+    }, 100);
+    // additional for dynamic awards
+    setTimeout(() => {
+        const awardItems = document.querySelectorAll('.award-badge');
+        awardItems.forEach(item => item.classList.add('fade-up'));
+        initScrollReveal();
+    }, 150);
+    // ensure visible after load
+    window.addEventListener('load', () => {
+        addFadeUpToCards();
+        initScrollReveal();
+    });
+</script>
+</body>
+</html>
