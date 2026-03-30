@@ -1,174 +1,188 @@
-import { useEffect, useRef, useState } from "react";
-import { experiences, projects, awards, ticker, strengths } from "../data";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const NEON = "#b5f23d";
+const BG = "#0b150b";
 
-/* ─── Scroll reveal hook ─────────────────────────────────────────── */
+/* ── Scroll reveal ─────────────────────────────────────────────── */
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const ob = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-            ob.unobserve(e.target);
-          }
-        });
-      },
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { el.classList.add("visible"); ob.unobserve(el); } }),
       { threshold: 0.08, rootMargin: "0px 0px -20px 0px" }
     );
     ob.observe(el);
-    const r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight - 40) el.classList.add("visible");
+    if (el.getBoundingClientRect().top < window.innerHeight - 40) el.classList.add("visible");
     return () => ob.disconnect();
   }, []);
   return ref;
 }
 
-function Reveal({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useReveal();
+  return <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>{children}</div>;
+}
+
+/* ── Animated counter ──────────────────────────────────────────── */
+function Counter({ target, suffix = "+" }: { target: number; suffix?: string }) {
+  const [val, setVal] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const ran = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ob = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !ran.current) {
+        ran.current = true;
+        let start = 0;
+        const step = () => {
+          start += 1;
+          setVal(start);
+          if (start < target) setTimeout(step, 60);
+        };
+        step();
+      }
+    }, { threshold: 0.5 });
+    ob.observe(el);
+    return () => ob.disconnect();
+  }, [target]);
+  return <div ref={ref} className="stat-value"><span>{val}{suffix}</span></div>;
+}
+
+/* ── Placeholder image ─────────────────────────────────────────── */
+function ImgPlaceholder({ label = "Image", className = "", style = {} }: { label?: string; className?: string; style?: React.CSSProperties }) {
   return (
     <div
-      ref={ref}
-      className={`reveal ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
+      className={`flex flex-col items-center justify-center gap-2 rounded-2xl ${className}`}
+      style={{ border: "1.5px dashed rgba(181,242,61,0.25)", background: "rgba(181,242,61,0.03)", ...style }}
     >
-      {children}
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="5" width="18" height="14" rx="2" stroke={NEON} strokeWidth="1.5" strokeOpacity="0.5"/>
+        <circle cx="12" cy="12" r="3" stroke={NEON} strokeWidth="1.5" strokeOpacity="0.5"/>
+        <path d="M8 5V4M16 5V4" stroke={NEON} strokeWidth="1.5" strokeOpacity="0.5" strokeLinecap="round"/>
+      </svg>
+      <span style={{ color: NEON, opacity: 0.4, fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        {label}
+      </span>
     </div>
   );
 }
 
-/* ─── Navbar ─────────────────────────────────────────────────────── */
+/* ── Navbar ────────────────────────────────────────────────────── */
 function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mob, setMob] = useState(false);
   const links = [
-    { href: "#work", label: "Work" },
+    { href: "#home",     label: "Home" },
     { href: "#projects", label: "Projects" },
-    { href: "#about", label: "About" },
-    { href: "#contact", label: "Contact" },
+    { href: "#about",    label: "About me" },
+    { href: "#contact",  label: "Reach me" },
   ];
-
   const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setMobileOpen(false);
+    e.preventDefault(); setMob(false);
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
-
   return (
-    <header className="sticky top-0 z-50 flex justify-center pt-5 pb-3 px-4">
-      <nav
-        className="flex items-center gap-6 px-5 py-3 rounded-full border"
-        style={{
-          background: "rgba(10,22,10,0.85)",
-          backdropFilter: "blur(14px)",
-          borderColor: "rgba(181,242,61,0.18)",
-        }}
-      >
-        {/* Logo */}
-        <span
-          className="text-sm font-bold tracking-tight whitespace-nowrap"
-          style={{ color: NEON }}
-        >
-          佟乐 · Le Tong
-        </span>
-
-        {/* Desktop links */}
-        <div className="hidden sm:flex items-center gap-5">
+    <header className="sticky top-0 z-50 flex justify-center pt-5 pb-2 px-4">
+      <nav className="flex items-center gap-5 px-5 py-2.5 rounded-full"
+        style={{ background: "rgba(8,18,8,0.88)", backdropFilter: "blur(16px)", border: "1px solid rgba(181,242,61,0.15)" }}>
+        {/* logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
+            style={{ background: NEON, color: BG }}>YN</div>
+          <span className="text-sm font-bold text-white hidden xs:inline">Your Name</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-5 ml-1">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={(e) => go(e, l.href)}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
-            >
-              {l.label}
-            </a>
+            <a key={l.href} href={l.href} onClick={(e) => go(e, l.href)}
+              className="text-sm font-medium text-white/65 hover:text-white transition-colors">{l.label}</a>
           ))}
         </div>
-
-        {/* Resume pill */}
-        <a
-          href="mailto:906074545@qq.com"
-          className="hidden sm:flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-full transition-all"
-          style={{
-            background: "transparent",
-            border: `1.5px solid ${NEON}`,
-            color: NEON,
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.background = NEON;
-            (e.currentTarget as HTMLAnchorElement).style.color = "#0a160a";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
-            (e.currentTarget as HTMLAnchorElement).style.color = NEON;
-          }}
-        >
-          Reach me ↗
+        <a href="#contact" onClick={(e) => go(e, "#contact")}
+          className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold px-4 py-1.5 rounded-full transition-all ml-1"
+          style={{ border: `1.5px solid ${NEON}`, color: NEON }}
+          onMouseEnter={(e) => { const t = e.currentTarget; t.style.background = NEON; t.style.color = BG; }}
+          onMouseLeave={(e) => { const t = e.currentTarget; t.style.background = "transparent"; t.style.color = NEON; }}>
+          Resume ↓
         </a>
-
-        {/* Mobile toggle */}
-        <button
-          className="sm:hidden flex flex-col gap-1 p-1"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          <span className="block w-4 h-0.5 bg-white" />
-          <span className="block w-4 h-0.5 bg-white" />
+        <button className="sm:hidden px-2" onClick={() => setMob(!mob)} aria-label="menu">
+          <div className="space-y-1"><span className="block w-4 h-0.5 bg-white"/><span className="block w-4 h-0.5 bg-white"/></div>
         </button>
       </nav>
-
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div
-          className="absolute top-16 left-4 right-4 rounded-2xl border p-5 flex flex-col gap-3"
-          style={{
-            background: "#0d1f0d",
-            borderColor: "rgba(181,242,61,0.2)",
-          }}
-        >
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={(e) => go(e, l.href)}
-              className="text-sm font-medium text-white/80 hover:text-white"
-            >
-              {l.label}
-            </a>
-          ))}
+      {mob && (
+        <div className="absolute top-16 left-4 right-4 rounded-2xl p-5 flex flex-col gap-3 z-50"
+          style={{ background: "#0d1f0d", border: "1px solid rgba(181,242,61,0.2)" }}>
+          {links.map((l) => <a key={l.href} href={l.href} onClick={(e) => go(e, l.href)}
+            className="text-sm font-medium text-white/80 hover:text-white">{l.label}</a>)}
         </div>
       )}
     </header>
   );
 }
 
-/* ─── Ticker / Marquee ───────────────────────────────────────────── */
-function Ticker() {
-  const items = [...ticker, ...ticker];
+/* ── Hanging ID Card ───────────────────────────────────────────── */
+function HangingCard() {
   return (
-    <div
-      className="overflow-hidden py-3 border-y"
-      style={{ borderColor: "rgba(181,242,61,0.25)", background: "rgba(181,242,61,0.07)" }}
-    >
+    <div className="flex flex-col items-center select-none">
+      {/* hook */}
+      <div className="flex flex-col items-center" style={{ marginBottom: "-2px" }}>
+        <div style={{ width: "2px", height: "28px", background: "rgba(255,255,255,0.2)" }} />
+        <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: "2px solid rgba(255,255,255,0.25)", background: "rgba(255,255,255,0.07)" }} />
+      </div>
+      {/* card */}
+      <div className="card-hang flex flex-col items-center rounded-2xl overflow-hidden shadow-2xl"
+        style={{ width: 168, background: "white", paddingBottom: "1.2rem" }}>
+        <ImgPlaceholder label="Your Photo" style={{ width: "100%", height: 180, borderRadius: 0, border: "none", background: "#f0f0f0" }} />
+        <div className="px-4 pt-3 text-center w-full">
+          <p className="font-black text-base text-black tracking-tight">[YOUR NAME]</p>
+          <div className="inline-flex items-center gap-1 mt-1.5 px-3 py-0.5 rounded-full text-xs font-semibold"
+            style={{ background: "#f0f0f0", color: "#444" }}>
+            Available for work
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Spinning badge ────────────────────────────────────────────── */
+function SpinBadge() {
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: 100, height: 100 }}>
+      <div className="spin-badge absolute inset-0">
+        <svg viewBox="0 0 100 100" width="100" height="100">
+          <defs>
+            <path id="cp" d="M 50 50 m -35 0 a 35 35 0 1 1 70 0 a 35 35 0 1 1 -70 0"/>
+          </defs>
+          <text fontSize="7.5" fontWeight="600" letterSpacing="1" fill={NEON} fontFamily="Inter, sans-serif">
+            <textPath href="#cp">✦ Drag to play ✦ Drag to play ✦ Drag to</textPath>
+          </text>
+        </svg>
+      </div>
+      {/* crosshair */}
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="5" stroke={NEON} strokeWidth="1.5"/>
+        <line x1="14" y1="2" x2="14" y2="9" stroke={NEON} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="14" y1="19" x2="14" y2="26" stroke={NEON} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="2" y1="14" x2="9" y2="14" stroke={NEON} strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="19" y1="14" x2="26" y2="14" stroke={NEON} strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    </div>
+  );
+}
+
+/* ── Ticker ────────────────────────────────────────────────────── */
+const TICKER_ITEMS = ["Product Design", "User-Centric", "Business Impact", "Design thinking", "Problem solving", "Immediate Joiner", "Product Design", "User-Centric", "Business Impact", "Design thinking", "Problem solving", "Immediate Joiner"];
+
+function Ticker() {
+  const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  return (
+    <div className="overflow-hidden py-3" style={{ background: NEON, marginTop: "2rem" }}>
       <div className="marquee-track">
-        {items.map((item, i) => (
-          <span
-            key={i}
-            className="mx-5 text-sm font-medium whitespace-nowrap flex items-center gap-3"
-            style={{ color: NEON }}
-          >
-            <span className="opacity-50">+</span> {item}
+        {doubled.map((item, i) => (
+          <span key={i} className="mx-4 text-sm font-semibold whitespace-nowrap flex items-center gap-3" style={{ color: BG }}>
+            <span className="opacity-50 text-xs">✦</span> {item}
           </span>
         ))}
       </div>
@@ -176,176 +190,117 @@ function Ticker() {
   );
 }
 
-/* ─── Hero ───────────────────────────────────────────────────────── */
+/* ── Scroll indicator ──────────────────────────────────────────── */
+function ScrollIndicator() {
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    const h = () => setShow(window.scrollY < 80);
+    window.addEventListener("scroll", h);
+    return () => window.removeEventListener("scroll", h);
+  }, []);
+  if (!show) return null;
+  return (
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none">
+      <div className="scroll-caret" />
+      <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em]" style={{ color: NEON }}>SCROLL</span>
+    </div>
+  );
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="max-w-5xl mx-auto px-6 pt-16 pb-20">
-      <div className="max-w-2xl">
-        <p className="text-white/50 text-sm font-medium mb-5">
-          你好 👋, great to have you here
-        </p>
-
-        <h1
-          className="font-black uppercase leading-[1.0] tracking-tight mb-6"
-          style={{
-            fontSize: "clamp(2.8rem, 8vw, 5rem)",
-            color: NEON,
-          }}
-        >
-          I'M A UX DESIGNER<br />CRAFTING E-COMMERCE<br />EXPERIENCES
-        </h1>
-
-        <p className="text-white/60 text-base max-w-lg leading-relaxed mb-8">
-          2+ years at Kuaishou & ByteDance, turning data into design decisions
-          that move metrics and elevate user journeys.
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-10">
-          {["30+ Design Awards", "AIGC Workflow", "Data-driven UX", "Global Perspective"].map((b) => (
-            <span
-              key={b}
-              className="text-xs font-medium px-3 py-1.5 rounded-full border"
-              style={{ borderColor: "rgba(181,242,61,0.3)", color: "rgba(181,242,61,0.8)" }}
-            >
-              {b}
-            </span>
-          ))}
+    <section id="home" className="relative min-h-[calc(100vh-80px)] flex flex-col">
+      <div className="flex-1 max-w-6xl mx-auto w-full px-6 pt-14 pb-8 flex flex-col md:flex-row items-start justify-between gap-10">
+        {/* Left */}
+        <div className="flex-1 min-w-0 pt-4">
+          <p className="text-white/50 text-sm font-medium mb-5 flex items-center gap-2">
+            Hello <span>👋</span>, great to have you here
+          </p>
+          <h1 className="font-black uppercase leading-[0.95] tracking-tight mb-6 text-white"
+            style={{ fontSize: "clamp(2.6rem, 7vw, 4.8rem)" }}>
+            I'M A{" "}
+            <span style={{ color: NEON }}>PRODUCT<br />DESIGNER</span><br />
+            CRAFTING<br />
+            [FIELD] PRODUCTS
+          </h1>
+          <p className="text-white/55 text-base max-w-md leading-relaxed">
+            [Your short bio — one to two sentences about your background and what you do.]
+          </p>
         </div>
 
-        <div className="flex gap-3">
-          <a
-            href="#work"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-6 py-3 rounded-full text-sm font-bold transition-all"
-            style={{ background: NEON, color: "#0a160a" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
-          >
-            View Work ↓
-          </a>
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="px-6 py-3 rounded-full text-sm font-bold border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
-          >
-            Get in touch
-          </a>
+        {/* Right — card + badge */}
+        <div className="flex items-start gap-4 md:pt-0 pt-4 self-start md:self-center">
+          <HangingCard />
+          <div className="mt-16">
+            <SpinBadge />
+          </div>
         </div>
       </div>
+
+      <Ticker />
+      <ScrollIndicator />
     </section>
   );
 }
 
-/* ─── Section label ──────────────────────────────────────────────── */
-function SectionLabel({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3 mb-8">
-      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: NEON }}>
-        {label}
-      </span>
-      <div className="flex-1 h-px" style={{ background: "rgba(181,242,61,0.15)" }} />
-    </div>
-  );
-}
+/* ── Featured Projects ─────────────────────────────────────────── */
+const FEATURED = [
+  { title: "[Project Title One]", tag: "Mobile App" },
+  { title: "[Project Title Two]", tag: "Mobile App" },
+  { title: "[Project Title Three]", tag: "Mobile App" },
+  { title: "[Project Title Four]", tag: "Mobile App & Website" },
+];
 
-/* ─── Experience ─────────────────────────────────────────────────── */
-function Experience() {
-  return (
-    <section id="work" className="max-w-5xl mx-auto px-6 py-16">
-      <SectionLabel label="Work Experience" />
-      <h2
-        className="font-black uppercase mb-10"
-        style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "white" }}
-      >
-        Career Path
-      </h2>
-      <div className="flex flex-col gap-5">
-        {experiences.map((exp, i) => (
-          <Reveal key={exp.company + exp.role} delay={i * 80}>
-            <div
-              className="rounded-2xl p-6 border group hover:border-[rgba(181,242,61,0.35)] transition-all duration-300"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.07)",
-              }}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
-                <div>
-                  <div className="font-bold text-white text-base">{exp.company}</div>
-                  <div
-                    className="text-sm font-medium mt-0.5"
-                    style={{ color: NEON }}
-                  >
-                    {exp.role}
-                  </div>
-                </div>
-                <span className="text-xs text-white/40 border border-white/10 px-3 py-1 rounded-full self-start whitespace-nowrap">
-                  {exp.period}
-                </span>
-              </div>
-              <ul className="flex flex-col gap-1.5">
-                {exp.highlights.map((h, j) => (
-                  <li key={j} className="text-sm text-white/55 flex items-start gap-2">
-                    <span className="mt-1 text-[0.4rem] rounded-full flex-shrink-0" style={{ color: NEON }}>●</span>
-                    {h}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
+const SIDE = [
+  { title: "[Side Project One]", tag: "[Company]" },
+  { title: "[Side Project Two]", tag: "[Company]" },
+  { title: "[Side Project Three]", tag: "[Company]" },
+];
 
-/* ─── Projects ───────────────────────────────────────────────────── */
 function Projects() {
   return (
-    <section id="projects" className="max-w-5xl mx-auto px-6 py-16">
-      <SectionLabel label="Selected Projects" />
-      <h2
-        className="font-black uppercase mb-10"
-        style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "white" }}
-      >
-        Product Stories
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {projects.map((proj, i) => (
-          <Reveal key={proj.title} delay={i * 70}>
-            <div
-              className="rounded-2xl p-5 border h-full flex flex-col group hover:border-[rgba(181,242,61,0.35)] hover:-translate-y-1 transition-all duration-300"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.07)",
-              }}
-            >
-              <div className="font-bold text-white text-sm leading-snug mb-1">
-                {proj.title}
+    <section id="projects" className="max-w-6xl mx-auto px-6 py-20">
+      {/* Featured */}
+      <Reveal>
+        <h2 className="font-black text-white mb-10" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+          Featured Projects
+        </h2>
+      </Reveal>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-20">
+        {FEATURED.map((p, i) => (
+          <Reveal key={i} delay={i * 80}>
+            <div className="project-card rounded-2xl overflow-hidden cursor-pointer group"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <ImgPlaceholder label="Project Image" style={{ height: 260, borderRadius: 0, border: "none" }} />
+              <div className="p-5">
+                <p className="font-bold text-white text-base leading-snug mb-2 group-hover:text-[#b5f23d] transition-colors">
+                  {p.title}
+                </p>
+                <span className="text-xs text-white/40 border border-white/10 px-2.5 py-0.5 rounded-full">{p.tag}</span>
               </div>
-              <div className="text-xs text-white/35 mb-3">{proj.subtitle}</div>
-              <div
-                className="text-xs font-semibold mb-4 px-2.5 py-1 rounded-full self-start"
-                style={{ background: "rgba(181,242,61,0.1)", color: NEON }}
-              >
-                {proj.metrics}
-              </div>
-              <div className="flex flex-wrap gap-1.5 mt-auto">
-                {proj.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[0.65rem] px-2 py-0.5 rounded-full border text-white/40"
-                    style={{ borderColor: "rgba(255,255,255,0.1)" }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+      {/* Side Projects */}
+      <Reveal>
+        <h2 className="font-black text-white mb-8" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+          Side Projects
+        </h2>
+      </Reveal>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {SIDE.map((p, i) => (
+          <Reveal key={i} delay={i * 70}>
+            <div className="project-card rounded-2xl overflow-hidden cursor-pointer group"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <ImgPlaceholder label="Project Image" style={{ height: 180, borderRadius: 0, border: "none" }} />
+              <div className="p-4">
+                <p className="font-bold text-white text-sm leading-snug mb-1.5 group-hover:text-[#b5f23d] transition-colors">
+                  {p.title}
+                </p>
+                <span className="text-xs text-white/35">{p.tag}</span>
               </div>
             </div>
           </Reveal>
@@ -355,181 +310,125 @@ function Projects() {
   );
 }
 
-/* ─── About ──────────────────────────────────────────────────────── */
+/* ── About ─────────────────────────────────────────────────────── */
 function About() {
   return (
-    <section id="about" className="max-w-5xl mx-auto px-6 py-16">
-      <SectionLabel label="About Me" />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Education */}
-        <Reveal>
-          <div
-            className="rounded-2xl p-6 border h-full"
-            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
-          >
-            <h3
-              className="text-xs font-bold uppercase tracking-widest mb-5"
-              style={{ color: NEON }}
-            >
-              Education
-            </h3>
-            <div className="flex flex-col gap-5">
-              <div>
-                <div className="font-bold text-white text-sm">Beijing University of Science & Technology</div>
-                <div className="text-xs text-white/50 mt-0.5">M.A. Design · Interaction Design</div>
-                <div className="text-xs text-white/30 mt-0.5">2021 – 2024 · 1st Class Scholarship</div>
-              </div>
-              <div className="h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
-              <div>
-                <div className="font-bold text-white text-sm">Shenyang Aerospace University</div>
-                <div className="text-xs text-white/50 mt-0.5">B.E. Industrial Design · Interaction & Experience</div>
-                <div className="text-xs text-white/30 mt-0.5">2016 – 2020 · Outstanding Graduate of Liaoning Province</div>
-              </div>
-            </div>
-          </div>
-        </Reveal>
+    <section id="about" className="max-w-6xl mx-auto px-6 py-20">
+      <Reveal>
+        <h2 className="font-black text-white mb-12" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+          A Bit About Me
+        </h2>
+      </Reveal>
 
-        {/* Strengths */}
-        <Reveal delay={100}>
-          <div
-            className="rounded-2xl p-6 border h-full"
-            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
-          >
-            <h3
-              className="text-xs font-bold uppercase tracking-widest mb-5"
-              style={{ color: NEON }}
-            >
-              Core Strengths
-            </h3>
-            <ul className="flex flex-col gap-3 mb-5">
-              {strengths.map((s, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-white/60">
-                  <span style={{ color: NEON }} className="mt-0.5 text-xs">→</span>
-                  {s}
-                </li>
-              ))}
-            </ul>
-            <div className="pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-              <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Tools</p>
-              <div className="flex flex-wrap gap-1.5">
-                {["Figma", "Principle", "Axure", "Midjourney", "Stable Diffusion", "AIGC"].map((t) => (
-                  <span
-                    key={t}
-                    className="text-[0.65rem] px-2 py-0.5 rounded-full border text-white/40"
-                    style={{ borderColor: "rgba(255,255,255,0.1)" }}
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
+      <div className="flex flex-col lg:flex-row gap-12 items-start">
+        {/* Text + stats */}
+        <div className="flex-1">
+          <Reveal>
+            <p className="text-white/55 text-base leading-relaxed mb-10 max-w-lg">
+              [Your story — two to three sentences about your background, experience,
+              and what drives you as a designer. Make it personal and genuine.]
+            </p>
+          </Reveal>
 
-        {/* Awards */}
-        <Reveal delay={150} className="lg:col-span-2">
-          <div
-            className="rounded-2xl p-6 border"
-            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
-          >
-            <h3
-              className="text-xs font-bold uppercase tracking-widest mb-5"
-              style={{ color: NEON }}
-            >
-              Awards & Honours
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {awards.map((a, i) => (
-                <span
-                  key={i}
-                  className="text-xs px-3 py-1.5 rounded-full border text-white/55 hover:text-white transition-colors"
-                  style={{ borderColor: "rgba(181,242,61,0.2)" }}
-                >
-                  🏅 {a}
-                </span>
+          {/* Stats */}
+          <Reveal delay={100}>
+            <div className="flex flex-wrap gap-10">
+              {[
+                { target: 2,  suffix: "+", label: "Years of Experience" },
+                { target: 4,  suffix: "+", label: "Completed Projects" },
+                { target: 2,  suffix: "+", label: "Companies worked" },
+              ].map((s) => (
+                <div key={s.label}>
+                  <div className="font-black text-5xl text-white mb-1">
+                    <Counter target={s.target} suffix={s.suffix} />
+                  </div>
+                  <p className="text-white/40 text-sm">{s.label}</p>
+                </div>
               ))}
             </div>
-          </div>
+          </Reveal>
+        </div>
+
+        {/* Photo */}
+        <Reveal delay={150} className="flex-1 w-full">
+          <ImgPlaceholder label="Your Photo" style={{ height: 420, width: "100%" }} />
         </Reveal>
       </div>
     </section>
   );
 }
 
-/* ─── Contact ────────────────────────────────────────────────────── */
+/* ── UI Wall ───────────────────────────────────────────────────── */
+function UIWall() {
+  const items = Array.from({ length: 8 }, (_, i) => i);
+  const doubled = [...items, ...items];
+  return (
+    <section className="py-12 overflow-hidden">
+      <Reveal>
+        <h2 className="font-black text-white mb-8 px-6 max-w-6xl mx-auto" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
+          Wall of UI Visuals Works
+        </h2>
+      </Reveal>
+      <div className="wall-track">
+        {doubled.map((_, i) => (
+          <ImgPlaceholder key={i} label="UI Visual" style={{ width: 160, height: 280, flexShrink: 0, borderRadius: "1rem" }} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Contact ───────────────────────────────────────────────────── */
 function Contact() {
   return (
-    <footer
-      id="contact"
-      className="border-t py-16"
-      style={{ borderColor: "rgba(255,255,255,0.06)" }}
-    >
-      <div className="max-w-5xl mx-auto px-6 text-center">
-        <h2
-          className="font-black uppercase mb-4"
-          style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: NEON }}
-        >
-          LET'S WORK TOGETHER
-        </h2>
-        <p className="text-white/50 text-sm mb-8">
-          Open to full-time roles & collaborations
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 mb-10">
-          <a
-            href="mailto:906074545@qq.com"
-            className="px-6 py-3 rounded-full text-sm font-bold transition-all"
-            style={{ background: NEON, color: "#0a160a" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
-          >
-            ✉️ 906074545@qq.com
-          </a>
-          <a
-            href="tel:+8618842417092"
-            className="px-6 py-3 rounded-full text-sm font-bold border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
-          >
-            📱 +86 18842417092
-          </a>
-        </div>
-        <p className="text-white/20 text-xs">
-          © 2025 佟乐 (Le Tong) — Designed with intention & curiosity
-        </p>
+    <section id="contact" className="py-24 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <Reveal>
+          <h2 className="font-black uppercase text-white mb-3" style={{ fontSize: "clamp(2rem, 6vw, 4rem)", lineHeight: 1.05 }}>
+            Available for<br />
+            <span style={{ color: NEON }}>New Challenges</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={80}>
+          <p className="text-white/45 text-base mb-10">
+            Open to new roles, feedback, or a simple coffee chat.
+          </p>
+        </Reveal>
+
+        <Reveal delay={140}>
+          <div className="flex flex-wrap justify-center gap-4 mb-14">
+            {["Linkedin", "Medium", "Behance", "Instagram"].map((name) => (
+              <a key={name} href="#"
+                className="text-sm font-semibold px-5 py-2.5 rounded-full border text-white/60 hover:text-white hover:border-white/40 transition-all"
+                style={{ borderColor: "rgba(255,255,255,0.15)" }}>{name}</a>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={180}>
+          <div className="flex flex-wrap justify-center gap-5 mb-14 text-sm text-white/40">
+            <a href="tel:+00000000000" className="hover:text-white transition-colors">+00 00000 00000</a>
+            <span>Email:</span>
+            <a href="mailto:your@email.com" className="hover:text-white transition-colors">your@email.com</a>
+          </div>
+        </Reveal>
+
+        <p className="text-white/20 text-xs">© [Your Name] {new Date().getFullYear()}</p>
       </div>
-    </footer>
+    </section>
   );
 }
 
-/* ─── Scroll indicator ───────────────────────────────────────────── */
-function ScrollHint() {
-  const [visible, setVisible] = useState(true);
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY < 60);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  if (!visible) return null;
-  return (
-    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none z-40">
-      <div className="w-px h-8 animate-pulse" style={{ background: NEON }} />
-      <span className="text-[0.65rem] font-bold uppercase tracking-widest" style={{ color: NEON }}>
-        Scroll
-      </span>
-    </div>
-  );
-}
-
-/* ─── Root ───────────────────────────────────────────────────────── */
+/* ── Root ──────────────────────────────────────────────────────── */
 export default function Portfolio() {
   return (
-    <div style={{ background: "#0a160a", minHeight: "100vh" }}>
+    <div style={{ background: BG, minHeight: "100vh" }}>
       <Navbar />
       <Hero />
-      <Ticker />
-      <Experience />
       <Projects />
       <About />
+      <UIWall />
       <Contact />
-      <ScrollHint />
     </div>
   );
 }

@@ -7,81 +7,100 @@
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-destructive: hsl(var(--destructive));
-
   --font-sans: var(--app-font-sans);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
 }
 
 :root {
   --background: 120 15% 5%;
   --foreground: 0 0% 95%;
-  --border: 120 10% 16%;
-  --input: 120 10% 16%;
-  --ring: 80 90% 58%;
-  --card: 120 12% 8%;
-  --card-foreground: 0 0% 95%;
+  --border: 120 10% 14%;
   --primary: 80 90% 58%;
   --primary-foreground: 120 15% 5%;
-  --secondary: 120 10% 12%;
-  --secondary-foreground: 0 0% 85%;
-  --muted: 120 10% 12%;
-  --muted-foreground: 0 0% 50%;
-  --accent: 80 90% 58%;
-  --accent-foreground: 120 15% 5%;
-  --destructive: 0 84% 60%;
-
+  --muted-foreground: 0 0% 45%;
   --app-font-sans: 'Inter', sans-serif;
   --radius: 0.5rem;
+  --neon: #b5f23d;
+  --bg: #0b150b;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-    scroll-behavior: smooth;
-  }
+  * { @apply border-border; }
+  body { @apply font-sans antialiased bg-background text-foreground; scroll-behavior: smooth; }
 }
 
-/* Marquee animation */
+/* ── Marquee ─────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to   { transform: translateX(-50%); }
 }
-
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 24s linear infinite;
+  animation: marquee 26s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ── Hanging card swing ──────────────────── */
+@keyframes swing {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50%       { transform: rotate(3.5deg); }
+}
+.card-hang {
+  transform-origin: top center;
+  animation: swing 5s ease-in-out infinite;
 }
 
-.marquee-track:hover {
-  animation-play-state: paused;
+/* ── Spinning badge ──────────────────────── */
+@keyframes spinBadge {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-badge { animation: spinBadge 9s linear infinite; }
+
+/* ── Scroll caret pulse ──────────────────── */
+@keyframes caretPulse {
+  0%, 100% { opacity: 1; height: 2.5rem; }
+  50%       { opacity: 0.25; height: 1.5rem; }
+}
+.scroll-caret {
+  width: 2px;
+  background: var(--neon);
+  animation: caretPulse 1.4s ease-in-out infinite;
 }
 
-/* Scroll fade-in */
+/* ── Scroll reveal ───────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Counter flip ────────────────────────── */
+@keyframes countUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
+.stat-value { overflow: hidden; }
+.stat-value span { display: inline-block; animation: countUp 0.7s ease forwards; }
+
+/* ── Project card hover ──────────────────── */
+.project-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.project-card:hover { transform: translateY(-6px); }
+
+/* ── UI Wall scroll ──────────────────────── */
+@keyframes wallScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.wall-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: wallScroll 30s linear infinite;
+}
+.wall-track:hover { animation-play-state: paused; }
