@@ -1,47 +1,47 @@
 import { useEffect, useRef, useState } from "react";
-import { experiences, projects, awards, strengths } from "../data";
+import { experiences, projects, awards, ticker, strengths } from "../data";
 
-function useScrollReveal() {
+const NEON = "#b5f23d";
+
+/* ─── Scroll reveal hook ─────────────────────────────────────────── */
+function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    const observer = new IntersectionObserver(
+    const ob = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0");
-            entry.target.classList.remove("opacity-0", "translate-y-5");
-            observer.unobserve(entry.target);
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            ob.unobserve(e.target);
           }
         });
       },
       { threshold: 0.08, rootMargin: "0px 0px -20px 0px" }
     );
-
-    observer.observe(el);
-
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 60) {
-      el.classList.add("opacity-100", "translate-y-0");
-      el.classList.remove("opacity-0", "translate-y-5");
-      observer.unobserve(el);
-    }
-
-    return () => observer.disconnect();
+    ob.observe(el);
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight - 40) el.classList.add("visible");
+    return () => ob.disconnect();
   }, []);
-
   return ref;
 }
 
-function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useScrollReveal();
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useReveal();
   return (
     <div
       ref={ref}
-      className="opacity-0 translate-y-5 transition-all duration-700 ease-out"
+      className={`reveal ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -49,92 +49,100 @@ function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 }
 
+/* ─── Navbar ─────────────────────────────────────────────────────── */
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const navLinks = [
+  const links = [
     { href: "#work", label: "Work" },
     { href: "#projects", label: "Projects" },
-    { href: "#experience", label: "Experience" },
-    { href: "#education", label: "Education" },
-    { href: "#awards", label: "Awards" },
+    { href: "#about", label: "About" },
     { href: "#contact", label: "Contact" },
   ];
 
-  const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileOpen(false);
-    const target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
-        scrolled ? "shadow-sm border-b border-[#eaeaea]" : "border-b border-[#eaeaea]"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-        <div
-          className="text-xl font-bold tracking-tight"
-          style={{
-            background: "linear-gradient(135deg, #111, #3a3a3a)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-          }}
+    <header className="sticky top-0 z-50 flex justify-center pt-5 pb-3 px-4">
+      <nav
+        className="flex items-center gap-6 px-5 py-3 rounded-full border"
+        style={{
+          background: "rgba(10,22,10,0.85)",
+          backdropFilter: "blur(14px)",
+          borderColor: "rgba(181,242,61,0.18)",
+        }}
+      >
+        {/* Logo */}
+        <span
+          className="text-sm font-bold tracking-tight whitespace-nowrap"
+          style={{ color: NEON }}
         >
-          佟乐 / Le Tong
-        </div>
+          佟乐 · Le Tong
+        </span>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex gap-7">
-          {navLinks.map((l) => (
+        {/* Desktop links */}
+        <div className="hidden sm:flex items-center gap-5">
+          {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              onClick={(e) => handleNav(e, l.href)}
-              className="text-sm font-medium text-[#2c2c2c] hover:text-black hover:underline underline-offset-4 transition-colors duration-200"
+              onClick={(e) => go(e, l.href)}
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors"
             >
               {l.label}
             </a>
           ))}
-        </nav>
+        </div>
 
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-1"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
+        {/* Resume pill */}
+        <a
+          href="mailto:906074545@qq.com"
+          className="hidden sm:flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-full transition-all"
+          style={{
+            background: "transparent",
+            border: `1.5px solid ${NEON}`,
+            color: NEON,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.background = NEON;
+            (e.currentTarget as HTMLAnchorElement).style.color = "#0a160a";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+            (e.currentTarget as HTMLAnchorElement).style.color = NEON;
+          }}
         >
-          <span
-            className={`block w-5 h-0.5 bg-[#111] transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
-          />
-          <span
-            className={`block w-5 h-0.5 bg-[#111] transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`}
-          />
-          <span
-            className={`block w-5 h-0.5 bg-[#111] transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
-          />
-        </button>
-      </div>
+          Reach me ↗
+        </a>
 
-      {/* Mobile menu */}
+        {/* Mobile toggle */}
+        <button
+          className="sm:hidden flex flex-col gap-1 p-1"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          <span className="block w-4 h-0.5 bg-white" />
+          <span className="block w-4 h-0.5 bg-white" />
+        </button>
+      </nav>
+
+      {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#eaeaea] bg-white px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((l) => (
+        <div
+          className="absolute top-16 left-4 right-4 rounded-2xl border p-5 flex flex-col gap-3"
+          style={{
+            background: "#0d1f0d",
+            borderColor: "rgba(181,242,61,0.2)",
+          }}
+        >
+          {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              onClick={(e) => handleNav(e, l.href)}
-              className="text-sm font-medium text-[#2c2c2c] hover:text-black"
+              onClick={(e) => go(e, l.href)}
+              className="text-sm font-medium text-white/80 hover:text-white"
             >
               {l.label}
             </a>
@@ -145,280 +153,383 @@ function Navbar() {
   );
 }
 
-function HeroSection() {
+/* ─── Ticker / Marquee ───────────────────────────────────────────── */
+function Ticker() {
+  const items = [...ticker, ...ticker];
   return (
-    <section className="max-w-6xl mx-auto px-6 py-14 md:py-20">
-      <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-start justify-between">
-        <div className="flex-[2] min-w-0">
-          <div className="text-xs uppercase tracking-widest text-[#6b6b6b] font-medium mb-3">
-            UX Designer · Product Design
-          </div>
-          <h1
-            className="font-semibold leading-[1.1] tracking-tight mb-4"
-            style={{ fontSize: "clamp(2.4rem, 7vw, 4.2rem)", letterSpacing: "-0.02em" }}
+    <div
+      className="overflow-hidden py-3 border-y"
+      style={{ borderColor: "rgba(181,242,61,0.25)", background: "rgba(181,242,61,0.07)" }}
+    >
+      <div className="marquee-track">
+        {items.map((item, i) => (
+          <span
+            key={i}
+            className="mx-5 text-sm font-medium whitespace-nowrap flex items-center gap-3"
+            style={{ color: NEON }}
           >
-            Crafting data‑driven<br />experiences with soul.
-          </h1>
-          <p className="text-[1.1rem] text-[#3a3a3a] max-w-xl mb-6 leading-relaxed">
-            2+ years experience in E‑commerce &amp; global platforms. Passionate about
-            AIGC, interaction design, and elevating user journeys.
-          </p>
-          <div className="flex flex-wrap gap-2 mb-7">
-            {["🏆 30+ Design Awards", "📊 Data-driven · UX", "🤖 AIGC Workflow", "🌏 Global perspective"].map(
-              (badge) => (
-                <span
-                  key={badge}
-                  className="inline-block bg-[#f2f2f2] px-3 py-1 rounded-full text-xs font-medium"
-                >
-                  {badge}
-                </span>
-              )
-            )}
-          </div>
-          <div className="flex gap-3 flex-wrap">
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="inline-block bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#2c2c2c] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              Get in touch
-            </a>
-            <a
-              href="#projects"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="inline-block border border-[#ccc] text-[#111] bg-transparent px-5 py-2.5 rounded-full text-sm font-medium hover:border-black hover:bg-[#f5f5f5] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              View projects ↓
-            </a>
-          </div>
-        </div>
-
+            <span className="opacity-50">+</span> {item}
+          </span>
+        ))}
       </div>
-    </section>
-  );
-}
-
-function SectionHeader({ subhead, title }: { subhead: string; title: string }) {
-  return (
-    <div className="mb-8">
-      <div className="text-xs uppercase tracking-widest text-[#6b6b6b] font-medium mb-2">
-        {subhead}
-      </div>
-      <h2
-        className="font-semibold tracking-tight"
-        style={{ fontSize: "clamp(1.7rem, 4vw, 2.3rem)", letterSpacing: "-0.01em" }}
-      >
-        {title}
-      </h2>
     </div>
   );
 }
 
-function ExperienceSection() {
+/* ─── Hero ───────────────────────────────────────────────────────── */
+function Hero() {
   return (
-    <section id="experience" className="border-t border-[#efefef] py-14">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionHeader subhead="Career path" title="Work experience" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {experiences.map((exp, i) => (
-            <RevealCard key={exp.company + exp.role} delay={i * 80}>
-              <div className="bg-white border border-[#f0f0f0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:-translate-y-1.5 hover:border-[#e0e0e0] hover:shadow-[0_16px_28px_-10px_rgba(0,0,0,0.08)] transition-all duration-250">
-                <div className="text-lg font-bold mb-0.5">{exp.company}</div>
-                <div className="font-semibold text-[#2c2c2c] text-sm mb-1">{exp.role}</div>
-                <div className="text-xs text-[#7a7a7a] border-l-2 border-[#ddd] pl-2 mb-4">
-                  {exp.period}
-                </div>
-                <ul className="list-disc pl-4 space-y-1.5">
-                  {exp.highlights.map((h, j) => (
-                    <li key={j} className="text-sm text-[#3e3e3e] leading-relaxed">
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealCard>
+    <section className="max-w-5xl mx-auto px-6 pt-16 pb-20">
+      <div className="max-w-2xl">
+        <p className="text-white/50 text-sm font-medium mb-5">
+          你好 👋, great to have you here
+        </p>
+
+        <h1
+          className="font-black uppercase leading-[1.0] tracking-tight mb-6"
+          style={{
+            fontSize: "clamp(2.8rem, 8vw, 5rem)",
+            color: NEON,
+          }}
+        >
+          I'M A UX DESIGNER<br />CRAFTING E-COMMERCE<br />EXPERIENCES
+        </h1>
+
+        <p className="text-white/60 text-base max-w-lg leading-relaxed mb-8">
+          2+ years at Kuaishou & ByteDance, turning data into design decisions
+          that move metrics and elevate user journeys.
+        </p>
+
+        <div className="flex flex-wrap gap-2 mb-10">
+          {["30+ Design Awards", "AIGC Workflow", "Data-driven UX", "Global Perspective"].map((b) => (
+            <span
+              key={b}
+              className="text-xs font-medium px-3 py-1.5 rounded-full border"
+              style={{ borderColor: "rgba(181,242,61,0.3)", color: "rgba(181,242,61,0.8)" }}
+            >
+              {b}
+            </span>
           ))}
+        </div>
+
+        <div className="flex gap-3">
+          <a
+            href="#work"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-6 py-3 rounded-full text-sm font-bold transition-all"
+            style={{ background: NEON, color: "#0a160a" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
+          >
+            View Work ↓
+          </a>
+          <a
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-6 py-3 rounded-full text-sm font-bold border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
+          >
+            Get in touch
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function ProjectsSection() {
+/* ─── Section label ──────────────────────────────────────────────── */
+function SectionLabel({ label }: { label: string }) {
   return (
-    <section id="projects" className="border-t border-[#efefef] py-14">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionHeader subhead="Selected projects" title="Impactful product stories" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {projects.map((proj, i) => (
-            <RevealCard key={proj.title} delay={i * 70}>
-              <div className="bg-white border border-[#f0f0f0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:-translate-y-1.5 hover:border-[#e0e0e0] hover:shadow-[0_16px_28px_-10px_rgba(0,0,0,0.08)] transition-all duration-250 h-full flex flex-col">
-                <div className="text-base font-bold mb-2">{proj.title}</div>
-                <p className="text-sm text-[#3d3d3d] mb-3 flex-1 leading-relaxed">{proj.desc}</p>
-                <div className="inline-block bg-[#eef9f0] text-[#1e6f3f] text-xs font-medium px-2.5 py-1 rounded-full mb-3">
-                  📊 {proj.metrics}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {proj.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[0.68rem] bg-[#f2f2f2] px-2 py-0.5 rounded-full text-[#444]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </RevealCard>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className="flex items-center gap-3 mb-8">
+      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: NEON }}>
+        {label}
+      </span>
+      <div className="flex-1 h-px" style={{ background: "rgba(181,242,61,0.15)" }} />
+    </div>
   );
 }
 
-function EducationSection() {
+/* ─── Experience ─────────────────────────────────────────────────── */
+function Experience() {
   return (
-    <section id="education" className="border-t border-[#efefef] py-14">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionHeader subhead="Background" title="Education & expertise" />
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex flex-col gap-5 flex-1">
-            <RevealCard>
-              <div className="bg-white border border-[#f0f0f0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                <h3 className="font-bold text-base mb-1">🎓 Beijing University of Science & Technology</h3>
-                <p className="font-semibold text-sm text-[#2c2c2c]">M.A. Design · Interaction Design</p>
-                <p className="text-sm text-[#6b6b6b] mt-1">2021 – 2024 | GPA: Top tier, 1st class scholarship</p>
-              </div>
-            </RevealCard>
-            <RevealCard delay={100}>
-              <div className="bg-white border border-[#f0f0f0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                <h3 className="font-bold text-base mb-1">✈️ Shenyang Aerospace University</h3>
-                <p className="font-semibold text-sm text-[#2c2c2c]">B.E. Industrial Design (Interaction & Experience)</p>
-                <p className="text-sm text-[#6b6b6b] mt-1">2016 – 2020 | Outstanding Graduate of Liaoning Province</p>
-              </div>
-            </RevealCard>
-          </div>
-          <div className="flex-[1.4]">
-            <RevealCard delay={150}>
-              <div className="bg-white border border-[#f0f0f0] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                <h3 className="font-bold text-base mb-4">⚡ Core strengths</h3>
-                <ul className="space-y-2.5">
-                  {strengths.map((s, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#3e3e3e] leading-relaxed">
-                      <span className="mt-0.5 text-[#111]">·</span>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 pt-4 border-t border-[#f0f0f0]">
-                  <p className="text-xs text-[#6b6b6b] font-medium uppercase tracking-wider mb-2">Tools & skills</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Figma", "Principle", "Axure", "Midjourney", "Stable Diffusion", "AIGC", "Design System", "A/B Testing", "User Research", "Prototyping"].map((tool) => (
-                      <span key={tool} className="text-[0.68rem] bg-[#f2f2f2] px-2 py-0.5 rounded-full text-[#444]">
-                        {tool}
-                      </span>
-                    ))}
+    <section id="work" className="max-w-5xl mx-auto px-6 py-16">
+      <SectionLabel label="Work Experience" />
+      <h2
+        className="font-black uppercase mb-10"
+        style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "white" }}
+      >
+        Career Path
+      </h2>
+      <div className="flex flex-col gap-5">
+        {experiences.map((exp, i) => (
+          <Reveal key={exp.company + exp.role} delay={i * 80}>
+            <div
+              className="rounded-2xl p-6 border group hover:border-[rgba(181,242,61,0.35)] transition-all duration-300"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                borderColor: "rgba(255,255,255,0.07)",
+              }}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
+                <div>
+                  <div className="font-bold text-white text-base">{exp.company}</div>
+                  <div
+                    className="text-sm font-medium mt-0.5"
+                    style={{ color: NEON }}
+                  >
+                    {exp.role}
                   </div>
                 </div>
+                <span className="text-xs text-white/40 border border-white/10 px-3 py-1 rounded-full self-start whitespace-nowrap">
+                  {exp.period}
+                </span>
               </div>
-            </RevealCard>
+              <ul className="flex flex-col gap-1.5">
+                {exp.highlights.map((h, j) => (
+                  <li key={j} className="text-sm text-white/55 flex items-start gap-2">
+                    <span className="mt-1 text-[0.4rem] rounded-full flex-shrink-0" style={{ color: NEON }}>●</span>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Projects ───────────────────────────────────────────────────── */
+function Projects() {
+  return (
+    <section id="projects" className="max-w-5xl mx-auto px-6 py-16">
+      <SectionLabel label="Selected Projects" />
+      <h2
+        className="font-black uppercase mb-10"
+        style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "white" }}
+      >
+        Product Stories
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {projects.map((proj, i) => (
+          <Reveal key={proj.title} delay={i * 70}>
+            <div
+              className="rounded-2xl p-5 border h-full flex flex-col group hover:border-[rgba(181,242,61,0.35)] hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                borderColor: "rgba(255,255,255,0.07)",
+              }}
+            >
+              <div className="font-bold text-white text-sm leading-snug mb-1">
+                {proj.title}
+              </div>
+              <div className="text-xs text-white/35 mb-3">{proj.subtitle}</div>
+              <div
+                className="text-xs font-semibold mb-4 px-2.5 py-1 rounded-full self-start"
+                style={{ background: "rgba(181,242,61,0.1)", color: NEON }}
+              >
+                {proj.metrics}
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-auto">
+                {proj.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[0.65rem] px-2 py-0.5 rounded-full border text-white/40"
+                    style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─── About ──────────────────────────────────────────────────────── */
+function About() {
+  return (
+    <section id="about" className="max-w-5xl mx-auto px-6 py-16">
+      <SectionLabel label="About Me" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Education */}
+        <Reveal>
+          <div
+            className="rounded-2xl p-6 border h-full"
+            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            <h3
+              className="text-xs font-bold uppercase tracking-widest mb-5"
+              style={{ color: NEON }}
+            >
+              Education
+            </h3>
+            <div className="flex flex-col gap-5">
+              <div>
+                <div className="font-bold text-white text-sm">Beijing University of Science & Technology</div>
+                <div className="text-xs text-white/50 mt-0.5">M.A. Design · Interaction Design</div>
+                <div className="text-xs text-white/30 mt-0.5">2021 – 2024 · 1st Class Scholarship</div>
+              </div>
+              <div className="h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
+              <div>
+                <div className="font-bold text-white text-sm">Shenyang Aerospace University</div>
+                <div className="text-xs text-white/50 mt-0.5">B.E. Industrial Design · Interaction & Experience</div>
+                <div className="text-xs text-white/30 mt-0.5">2016 – 2020 · Outstanding Graduate of Liaoning Province</div>
+              </div>
+            </div>
           </div>
-        </div>
+        </Reveal>
+
+        {/* Strengths */}
+        <Reveal delay={100}>
+          <div
+            className="rounded-2xl p-6 border h-full"
+            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            <h3
+              className="text-xs font-bold uppercase tracking-widest mb-5"
+              style={{ color: NEON }}
+            >
+              Core Strengths
+            </h3>
+            <ul className="flex flex-col gap-3 mb-5">
+              {strengths.map((s, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-white/60">
+                  <span style={{ color: NEON }} className="mt-0.5 text-xs">→</span>
+                  {s}
+                </li>
+              ))}
+            </ul>
+            <div className="pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+              <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Tools</p>
+              <div className="flex flex-wrap gap-1.5">
+                {["Figma", "Principle", "Axure", "Midjourney", "Stable Diffusion", "AIGC"].map((t) => (
+                  <span
+                    key={t}
+                    className="text-[0.65rem] px-2 py-0.5 rounded-full border text-white/40"
+                    style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Awards */}
+        <Reveal delay={150} className="lg:col-span-2">
+          <div
+            className="rounded-2xl p-6 border"
+            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
+          >
+            <h3
+              className="text-xs font-bold uppercase tracking-widest mb-5"
+              style={{ color: NEON }}
+            >
+              Awards & Honours
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {awards.map((a, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-3 py-1.5 rounded-full border text-white/55 hover:text-white transition-colors"
+                  style={{ borderColor: "rgba(181,242,61,0.2)" }}
+                >
+                  🏅 {a}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function AwardsSection() {
+/* ─── Contact ────────────────────────────────────────────────────── */
+function Contact() {
   return (
-    <section id="awards" className="border-t border-[#efefef] py-14">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionHeader subhead="Recognition" title="Awards & honors" />
-        <div className="flex flex-wrap gap-3">
-          {awards.map((award, i) => (
-            <RevealCard key={i} delay={i * 50}>
-              <span className="inline-block bg-[#f9f9f9] border border-[#ececec] px-4 py-2 rounded-full text-sm font-medium hover:border-[#d0d0d0] hover:bg-white transition-all duration-200 cursor-default">
-                🏅 {award}
-              </span>
-            </RevealCard>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ContactFooter() {
-  return (
-    <footer id="contact" className="border-t border-[#efefef] py-14">
-      <div className="max-w-6xl mx-auto px-6 text-center">
-        <h3 className="text-xl font-semibold mb-3">Let's connect</h3>
-        <p className="text-[#3e3e3e] text-sm mb-4">
+    <footer
+      id="contact"
+      className="border-t py-16"
+      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+    >
+      <div className="max-w-5xl mx-auto px-6 text-center">
+        <h2
+          className="font-black uppercase mb-4"
+          style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", color: NEON }}
+        >
+          LET'S WORK TOGETHER
+        </h2>
+        <p className="text-white/50 text-sm mb-8">
+          Open to full-time roles & collaborations
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
           <a
             href="mailto:906074545@qq.com"
-            className="text-[#111] hover:underline underline-offset-4"
+            className="px-6 py-3 rounded-full text-sm font-bold transition-all"
+            style={{ background: NEON, color: "#0a160a" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
           >
             ✉️ 906074545@qq.com
           </a>
-          &nbsp;&nbsp;|&nbsp;&nbsp;
           <a
             href="tel:+8618842417092"
-            className="text-[#111] hover:underline underline-offset-4"
+            className="px-6 py-3 rounded-full text-sm font-bold border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
           >
             📱 +86 18842417092
           </a>
-        </p>
-        <div className="flex justify-center gap-5 mb-8">
-          <a
-            href="#"
-            className="text-[#2c2c2c] hover:text-black text-sm font-medium transition-colors"
-            aria-label="LinkedIn"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="#"
-            className="text-[#2c2c2c] hover:text-black text-sm font-medium transition-colors"
-            aria-label="GitHub"
-          >
-            GitHub
-          </a>
-          <a
-            href="#"
-            className="text-[#2c2c2c] hover:text-black text-sm font-medium transition-colors"
-            aria-label="Twitter"
-          >
-            Twitter
-          </a>
         </div>
-        <p className="text-[#6c6c6c] text-xs">
-          © 2025 佟乐 (Le Tong) — Designed with intention &amp; curiosity
+        <p className="text-white/20 text-xs">
+          © 2025 佟乐 (Le Tong) — Designed with intention & curiosity
         </p>
       </div>
     </footer>
   );
 }
 
+/* ─── Scroll indicator ───────────────────────────────────────────── */
+function ScrollHint() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY < 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none z-40">
+      <div className="w-px h-8 animate-pulse" style={{ background: NEON }} />
+      <span className="text-[0.65rem] font-bold uppercase tracking-widest" style={{ color: NEON }}>
+        Scroll
+      </span>
+    </div>
+  );
+}
+
+/* ─── Root ───────────────────────────────────────────────────────── */
 export default function Portfolio() {
   return (
-    <div className="bg-white text-[#171717] min-h-screen">
+    <div style={{ background: "#0a160a", minHeight: "100vh" }}>
       <Navbar />
-      <main>
-        <HeroSection />
-        <div id="work" />
-        <ExperienceSection />
-        <ProjectsSection />
-        <EducationSection />
-        <AwardsSection />
-      </main>
-      <ContactFooter />
+      <Hero />
+      <Ticker />
+      <Experience />
+      <Projects />
+      <About />
+      <Contact />
+      <ScrollHint />
     </div>
   );
 }
