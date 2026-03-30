@@ -133,7 +133,7 @@ function HangingCard() {
       {/* card */}
       <div className="card-hang flex flex-col items-center rounded-2xl overflow-hidden shadow-2xl"
         style={{ width: 168, background: "white", paddingBottom: "1.2rem" }}>
-        <ImgPlaceholder label="Your Photo" style={{ width: "100%", height: 180, borderRadius: 0, border: "none", background: "#f0f0f0" }} />
+        <img src="/p1.jpg" alt="Profile" style={{ width: "100%", height: 180, objectFit: "cover", objectPosition: "center top", display: "block" }} />
         <div className="px-4 pt-3 text-center w-full">
           <p className="font-black text-base text-black tracking-tight">[YOUR NAME]</p>
           <div className="inline-flex items-center gap-1 mt-1.5 px-3 py-0.5 rounded-full text-xs font-semibold"
