@@ -199,24 +199,6 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="flex-1 min-w-[180px] w-full md:max-w-[260px]">
-          <div className="bg-[#f5f5f5] rounded-3xl p-6 text-center">
-            <div className="text-3xl mb-3">⭐</div>
-            <p className="font-medium text-[#111] leading-relaxed text-sm">
-              "Design with empathy,<br />scale with data."
-            </p>
-            <div className="flex flex-wrap gap-1.5 justify-center mt-4">
-              {["CET-6", "全链路设计", "Design System"].map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[0.7rem] bg-white/70 border border-white/80 px-2.5 py-0.5 rounded-full text-[#444]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
