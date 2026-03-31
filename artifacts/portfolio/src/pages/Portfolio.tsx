@@ -245,10 +245,10 @@ function Hero() {
 
 /* ── Featured Projects ─────────────────────────────────────────── */
 const FEATURED = [
-  { title: "直播间进间链路设计", tags: ["框架创新", "0-1设计", "设计专利", "全链路设计"] },
-  { title: "评价填写链路优化",   tags: ["AIGC", "交互优化", "提效率"] },
-  { title: "商品评价导购链路优化", tags: ["UI改版", "促转化"] },
-  { title: "春节送礼物项目",     tags: ["0-1搭建", "紧急项目", "多端设计"] },
+  { title: "直播间进间链路设计", tags: ["框架创新", "0-1设计", "设计专利", "全链路设计"], img: "/proj1.png" },
+  { title: "评价填写链路优化",   tags: ["AIGC", "交互优化", "提效率"],                  img: "/proj2.png" },
+  { title: "商品评价导购链路优化", tags: ["UI改版", "促转化"],                           img: "/proj3.png" },
+  { title: "春节送礼物项目",     tags: ["0-1搭建", "紧急项目", "多端设计"],              img: "/proj4.png" },
 ];
 
 const SIDE = [
@@ -271,7 +271,10 @@ function Projects() {
           <Reveal key={i} delay={i * 80}>
             <div className="project-card rounded-2xl overflow-hidden cursor-pointer group"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <ImgPlaceholder label="Project Image" style={{ height: 260, borderRadius: 0, border: "none" }} />
+              <div style={{ width: "100%", overflow: "hidden", background: "rgba(255,255,255,0.03)" }}>
+                <img src={p.img} alt={p.title}
+                  style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+              </div>
               <div className="p-5">
                 <p className="font-bold text-white text-base leading-snug mb-3 group-hover:text-[#b5f23d] transition-colors">
                   {p.title}
