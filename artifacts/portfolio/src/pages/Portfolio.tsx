@@ -475,6 +475,65 @@ function Experience() {
   );
 }
 
+/* ── About Photo with tilt + float ─────────────────────────────── */
+function AboutPhoto() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const [hovered, setHovered] = useState(false);
+  const raf = useRef<number>(0);
+
+  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top)  / height - 0.5;
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => {
+      setTilt({ rx: -y * 14, ry: x * 14 });
+    });
+  }, []);
+
+  const onLeave = useCallback(() => {
+    setHovered(false);
+    cancelAnimationFrame(raf.current);
+    setTilt({ rx: 0, ry: 0 });
+  }, []);
+
+  return (
+    <div
+      ref={wrapRef}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={onLeave}
+      style={{ perspective: "800px", cursor: "none", display: "inline-block", width: "100%", maxWidth: 380 }}
+    >
+      <div
+        className={hovered ? "" : "photo-float"}
+        style={{
+          transform: hovered
+            ? `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale(1.03)`
+            : undefined,
+          transition: hovered ? "transform 0.08s linear" : "transform 0.6s ease",
+          borderRadius: "1.25rem",
+          overflow: "hidden",
+          boxShadow: hovered
+            ? `${-tilt.ry * 1.2}px ${tilt.rx * 1.2}px 40px rgba(181,242,61,0.18)`
+            : "0 8px 40px rgba(0,0,0,0.35)",
+          willChange: "transform",
+        }}
+      >
+        <img
+          src="/about-photo.png"
+          alt="Le Tong"
+          style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }}
+          draggable={false}
+        />
+      </div>
+    </div>
+  );
+}
+
 /* ── About ─────────────────────────────────────────────────────── */
 function About() {
   return (
@@ -517,11 +576,8 @@ function About() {
         </div>
 
         {/* Photo */}
-        <Reveal delay={150} className="flex-1 w-full">
-          <div className="rounded-2xl overflow-hidden w-full">
-            <img src="/about-photo.png" alt="About Le Tong"
-              style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
-          </div>
+        <Reveal delay={150} className="flex-shrink-0 flex justify-center lg:justify-end">
+          <AboutPhoto />
         </Reveal>
       </div>
     </section>

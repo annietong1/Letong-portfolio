@@ -61,6 +61,16 @@
 }
 .spin-badge { animation: spinBadge 9s linear infinite; }
 
+/* ── About photo float ───────────────────── */
+@keyframes photoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.photo-float {
+  animation: photoFloat 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* ── Scroll caret pulse ──────────────────── */
 @keyframes caretPulse {
   0%, 100% { opacity: 1; height: 2.5rem; }
