@@ -100,7 +100,7 @@ function Navbar() {
               className="text-sm font-medium text-white/65 hover:text-white transition-colors">{l.label}</a>
           ))}
         </div>
-        <a href="#contact" onClick={(e) => go(e, "#contact")}
+        <a href="/resume.pdf" download="LeTong_Resume.pdf"
           className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold px-4 py-1.5 rounded-full transition-all ml-1"
           style={{ border: `1.5px solid ${NEON}`, color: NEON }}
           onMouseEnter={(e) => { const t = e.currentTarget; t.style.background = NEON; t.style.color = BG; }}
