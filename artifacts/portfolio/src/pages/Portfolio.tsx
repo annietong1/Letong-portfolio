@@ -134,7 +134,7 @@ function HangingCard() {
       {/* card */}
       <div className="card-hang flex flex-col items-center rounded-2xl overflow-hidden shadow-2xl"
         style={{ width: 168, background: "white", paddingBottom: "1.2rem" }}>
-        <img src="/p1.jpg" alt="Profile" style={{ width: "100%", height: 180, objectFit: "cover", objectPosition: "center top", display: "block" }} />
+        <img src="/p2.png" alt="Profile" style={{ width: "100%", height: 180, objectFit: "cover", objectPosition: "center top", display: "block" }} />
         <div className="px-4 pt-3 text-center w-full">
           <p className="font-black text-base text-black tracking-tight">Le Tong</p>
           <div className="inline-flex items-center gap-1 mt-1.5 px-3 py-0.5 rounded-full text-xs font-semibold"
@@ -381,6 +381,55 @@ const EDUCATION = [
   },
 ];
 
+function WorkExpList() {
+  const [hovered, setHovered] = useState<number | null>(null);
+  return (
+    <div className="space-y-10 mb-20">
+      {WORK_EXP.map((job, i) => {
+        const isHovered = hovered === i;
+        const isFull = job.type === "full-time";
+        return (
+          <Reveal key={i} delay={i * 60}>
+            <div
+              className="rounded-xl px-6 py-5 transition-all duration-300 cursor-default"
+              style={{
+                borderLeft: `2px solid ${isHovered ? NEON : isFull ? NEON : "rgba(255,255,255,0.12)"}`,
+                background: isHovered ? "rgba(181,242,61,0.05)" : "transparent",
+              }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className={`font-black transition-colors duration-200 ${isFull ? "text-xl" : "text-base"}`}
+                  style={{ color: isHovered ? NEON : "white" }}>{job.company}</span>
+                <span className="text-[0.62rem] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                  style={{ background: isFull ? NEON : "rgba(255,255,255,0.1)", color: isFull ? BG : "rgba(255,255,255,0.5)" }}>
+                  {isFull ? "Full-time" : "Internship"}
+                </span>
+              </div>
+              <p className={`mb-1 transition-colors duration-200 ${isFull ? "text-base font-semibold" : "text-sm font-medium"}`}
+                style={{ color: isHovered ? "rgba(181,242,61,0.85)" : isFull ? NEON : "rgba(255,255,255,0.55)" }}>
+                {job.role}
+              </p>
+              <p className="text-xs text-white/30 mb-4 font-medium">{job.period}</p>
+              <ul className="space-y-1.5">
+                {job.bullets.map((b, j) => (
+                  <li key={j} className="flex items-start gap-2 text-sm leading-relaxed transition-colors duration-200"
+                    style={{ color: isHovered ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)" }}>
+                    <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0 transition-colors duration-200"
+                      style={{ background: isHovered ? NEON : "rgba(255,255,255,0.3)" }} />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+        );
+      })}
+    </div>
+  );
+}
+
 function Experience() {
   return (
     <section id="experience" className="max-w-6xl mx-auto px-6 py-20">
@@ -396,35 +445,7 @@ function Experience() {
           Work Experience
         </p>
       </Reveal>
-      <div className="space-y-10 mb-20">
-        {WORK_EXP.map((job, i) => (
-          <Reveal key={i} delay={i * 60}>
-            <div className="flex gap-6 items-start" style={{ borderLeft: `2px solid ${job.type === "full-time" ? NEON : "rgba(255,255,255,0.12)"}`, paddingLeft: "1.5rem" }}>
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className={`font-black text-white ${job.type === "full-time" ? "text-xl" : "text-base"}`}>{job.company}</span>
-                  <span className="text-[0.62rem] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                    style={{ background: job.type === "full-time" ? NEON : "rgba(255,255,255,0.1)", color: job.type === "full-time" ? BG : "rgba(255,255,255,0.5)" }}>
-                    {job.type === "full-time" ? "Full-time" : "Internship"}
-                  </span>
-                </div>
-                <p className={`mb-1 ${job.type === "full-time" ? "text-base font-semibold" : "text-sm font-medium"}`} style={{ color: job.type === "full-time" ? NEON : "rgba(255,255,255,0.55)" }}>
-                  {job.role}
-                </p>
-                <p className="text-xs text-white/30 mb-4 font-medium">{job.period}</p>
-                <ul className="space-y-1.5">
-                  {job.bullets.map((b, j) => (
-                    <li key={j} className="flex items-start gap-2 text-white/55 text-sm leading-relaxed">
-                      <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "rgba(255,255,255,0.3)" }} />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Reveal>
-        ))}
-      </div>
+      <WorkExpList />
 
       {/* Education */}
       <Reveal>
@@ -454,7 +475,7 @@ function About() {
     <section id="about" className="max-w-6xl mx-auto px-6 py-20">
       <Reveal>
         <h2 className="font-black text-white mb-12" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
-          A Bit About Me
+          About Me
         </h2>
       </Reveal>
 
@@ -556,8 +577,8 @@ export default function Portfolio() {
       <Navbar />
       <Hero />
       <Projects />
-      <Experience />
       <About />
+      <Experience />
       <UIWall />
       <Contact />
     </div>
