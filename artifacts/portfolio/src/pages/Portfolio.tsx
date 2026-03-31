@@ -74,10 +74,11 @@ function ImgPlaceholder({ label = "Image", className = "", style = {} }: { label
 function Navbar() {
   const [mob, setMob] = useState(false);
   const links = [
-    { href: "#home",     label: "Home" },
-    { href: "#projects", label: "Projects" },
-    { href: "#about",    label: "About me" },
-    { href: "#contact",  label: "Reach me" },
+    { href: "#home",       label: "Home" },
+    { href: "#projects",   label: "Projects" },
+    { href: "#about",      label: "About me" },
+    { href: "#experience", label: "Reach me" },
+    { href: "#uiwall",     label: "Practice" },
   ];
   const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault(); setMob(false);
@@ -200,7 +201,7 @@ function ScrollIndicator() {
   }, []);
   if (!show) return null;
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none">
+    <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none">
       <div className="scroll-caret" />
       <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em]" style={{ color: NEON }}>SCROLL</span>
     </div>
@@ -316,6 +317,137 @@ function Projects() {
   );
 }
 
+/* ── Personal Experience ───────────────────────────────────────── */
+const WORK_EXP = [
+  {
+    company: "Kuaishou · 快手",
+    role: "UX Designer · E-commerce Design Center",
+    period: "2024.07 – 2026.03",
+    type: "full-time" as const,
+    bullets: [
+      "Led live-streaming room redesign, increased entry rate by +1.145%",
+      "Optimized product display & visual hierarchy, lifted entry rate by +0.947% in total",
+      "Revamped review/comment full chain with AI, boosted payment conversion +0.352% and effective reviews +2.902%",
+      "Owned 618/Double 11 UI and navigation bar design system components, coordinated team work",
+    ],
+  },
+  {
+    company: "ByteDance · 字节跳动",
+    role: "Product Design Intern (Ads & Commerce)",
+    period: "2022.10 – 2024.03",
+    type: "internship" as const,
+    bullets: [
+      "Designed livestream/short-video ad formats, boosted Adv+ +0.99%, GMV +0.66%, CVR +20%",
+      "Integrated e-commerce ads into search, built design specs with 5+ teams",
+      "Launched 0→1 AR try-on ads, generated $3.2M estimated first-year revenue",
+      "Optimized ad quality feedback loop, increased survey recovery rate by 18%",
+    ],
+  },
+  {
+    company: "ByteDance · 字节跳动",
+    role: "Interaction Design Intern (Global E-commerce)",
+    period: "2022.05 – 2022.09",
+    type: "internship" as const,
+    bullets: [
+      "Led S-level Indonesia Independence Day H5 project, increased new user GMV +2.715% and conversion +4.54%",
+      "Researched SEA cross-cultural design patterns, supported mega-sale strategies",
+      "Co-authored UK localized marketing design white paper",
+    ],
+  },
+  {
+    company: "Tencent · 腾讯",
+    role: "Interaction Design Intern",
+    period: "2020.04 – 2020.08",
+    type: "internship" as const,
+    bullets: [
+      "Designed game interfaces and interaction flows for The Legend of Qin, fixed bugs",
+      "Built game component library from scratch, improved development handoff efficiency by 30%",
+    ],
+  },
+];
+
+const EDUCATION = [
+  {
+    school: "Beijing University of Science & Technology",
+    degree: "M.A. Design · Interaction Design",
+    period: "2021 – 2024",
+    note: "GPA: Top tier, 1st class scholarship",
+  },
+  {
+    school: "Shenyang Aerospace University",
+    degree: "B.E. Industrial Design (Interaction & Experience)",
+    period: "2016 – 2020",
+    note: "Outstanding Graduate of Liaoning Province",
+  },
+];
+
+function Experience() {
+  return (
+    <section id="experience" className="max-w-6xl mx-auto px-6 py-20">
+      <Reveal>
+        <h2 className="font-black text-white mb-14" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+          Personal Experience
+        </h2>
+      </Reveal>
+
+      {/* Work Experience */}
+      <Reveal>
+        <p className="text-xs font-bold uppercase tracking-[0.15em] mb-8" style={{ color: NEON }}>
+          Work Experience
+        </p>
+      </Reveal>
+      <div className="space-y-10 mb-20">
+        {WORK_EXP.map((job, i) => (
+          <Reveal key={i} delay={i * 60}>
+            <div className="flex gap-6 items-start" style={{ borderLeft: `2px solid ${job.type === "full-time" ? NEON : "rgba(255,255,255,0.12)"}`, paddingLeft: "1.5rem" }}>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className={`font-black text-white ${job.type === "full-time" ? "text-xl" : "text-base"}`}>{job.company}</span>
+                  <span className="text-[0.62rem] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                    style={{ background: job.type === "full-time" ? NEON : "rgba(255,255,255,0.1)", color: job.type === "full-time" ? BG : "rgba(255,255,255,0.5)" }}>
+                    {job.type === "full-time" ? "Full-time" : "Internship"}
+                  </span>
+                </div>
+                <p className={`mb-1 ${job.type === "full-time" ? "text-base font-semibold" : "text-sm font-medium"}`} style={{ color: job.type === "full-time" ? NEON : "rgba(255,255,255,0.55)" }}>
+                  {job.role}
+                </p>
+                <p className="text-xs text-white/30 mb-4 font-medium">{job.period}</p>
+                <ul className="space-y-1.5">
+                  {job.bullets.map((b, j) => (
+                    <li key={j} className="flex items-start gap-2 text-white/55 text-sm leading-relaxed">
+                      <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "rgba(255,255,255,0.3)" }} />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+      {/* Education */}
+      <Reveal>
+        <p className="text-xs font-bold uppercase tracking-[0.15em] mb-8" style={{ color: NEON }}>
+          Education
+        </p>
+      </Reveal>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {EDUCATION.map((edu, i) => (
+          <Reveal key={i} delay={i * 80}>
+            <div className="rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <p className="font-black text-white text-base mb-1">{edu.school}</p>
+              <p className="text-sm font-semibold mb-1" style={{ color: NEON }}>{edu.degree}</p>
+              <p className="text-xs text-white/30 mb-3">{edu.period}</p>
+              <p className="text-xs text-white/45">{edu.note}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /* ── About ─────────────────────────────────────────────────────── */
 function About() {
   return (
@@ -371,7 +503,7 @@ function UIWall() {
   const items = Array.from({ length: 8 }, (_, i) => i);
   const doubled = [...items, ...items];
   return (
-    <section className="py-12 overflow-hidden">
+    <section id="uiwall" className="py-12 overflow-hidden">
       <Reveal>
         <h2 className="font-black text-white mb-8 px-6 max-w-6xl mx-auto" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
           Some AI Practices
@@ -424,6 +556,7 @@ export default function Portfolio() {
       <Navbar />
       <Hero />
       <Projects />
+      <Experience />
       <About />
       <UIWall />
       <Contact />

@@ -1,0 +1,51 @@
+1. Add a new section named "Personal Experience", placed after the "Side projects" section.
+2. Update the top Navbar:
+   1. Keep "Reach Me" which links to the "Personal Experience" section.
+   2. Add a new Navbar item "Practice" right after "Reach Me".
+   3. The "Practice" item links to the "Some AI Practices" section on the page.
+3. The "Personal Experience" section displays an introduction, divided into two parts: Work Experience (more important) and Education Experience.
+4. Use different font sizes and font weights to show importance levels:
+   - Full-time work experience is more important than internships; use tags to distinguish them.
+   - Highlight company names and job titles.
+   - Order work experience from the newest to the oldest.
+5. Adjust the homepage scroll position: move the scroll target position slightly higher / up a little bit.
+
+---
+Work Experience Content:
+#### Kuaishou・快手 | UX Designer・E-commerce Design Center | 2024.07 – 2026.03
+Tag: Full-time
+- Led live-streaming room redesign, increased entry rate by +1.145%
+- Optimized product display & visual hierarchy, lifted entry rate by +0.947% in total
+- Revamped review/comment full chain with AI, boosted payment conversion +0.352% and effective reviews +2.902%
+- Owned 618/Double 11 UI and navigation bar design system components, coordinated team work
+
+---
+#### ByteDance・字节跳动 | Product Design Intern (Ads & Commerce) | 2022.10 – 2024.03
+Tag: Internship
+- Designed livestream/short-video ad formats, boosted Adv+ +0.99%, GMV +0.66%, CVR +20%
+- Integrated e-commerce ads into search, built design specs with 5+ teams
+- Launched 0→1 AR try-on ads, generated $3.2M estimated first-year revenue
+- Optimized ad quality feedback loop, increased survey recovery rate by 18%
+
+---
+#### ByteDance・字节跳动 | Interaction Design Intern (Global E-commerce) | 2022.05 – 2022.09
+Tag: Internship
+- Led S-level Indonesia Independence Day H5 project, increased new user GMV +2.715% and conversion +4.54%
+- Researched SEA cross-cultural design patterns, supported mega-sale strategies
+- Co-authored UK localized marketing design white paper
+
+---
+#### Tencent・腾讯 | Interaction Design Intern | 2020.04 – 2020.08
+Tag: Internship
+- Designed game interfaces and interaction flows for The Legend of Qin, fixed bugs
+- Built game component library from scratch, improved development handoff efficiency by 30%
+
+---
+Education Experience Content:
+1. Beijing University of Science & Technology | 2021 – 2024
+M.A. Design · Interaction Design
+GPA: Top tier, 1st class scholarship
+
+2. Shenyang Aerospace University | 2016 – 2020
+B.E. Industrial Design (Interaction & Experience)
+Outstanding Graduate of Liaoning Province
