@@ -90,8 +90,8 @@ function Navbar() {
         {/* logo */}
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
-            style={{ background: NEON, color: BG }}>YN</div>
-          <span className="text-sm font-bold text-white hidden xs:inline">Your Name</span>
+            style={{ background: NEON, color: BG }}>安</div>
+          <span className="text-sm font-bold text-white hidden xs:inline">Annie</span>
         </div>
         <div className="hidden sm:flex items-center gap-5 ml-1">
           {links.map((l) => (
@@ -135,7 +135,7 @@ function HangingCard() {
         style={{ width: 168, background: "white", paddingBottom: "1.2rem" }}>
         <img src="/p1.jpg" alt="Profile" style={{ width: "100%", height: 180, objectFit: "cover", objectPosition: "center top", display: "block" }} />
         <div className="px-4 pt-3 text-center w-full">
-          <p className="font-black text-base text-black tracking-tight">[YOUR NAME]</p>
+          <p className="font-black text-base text-black tracking-tight">Le Tong</p>
           <div className="inline-flex items-center gap-1 mt-1.5 px-3 py-0.5 rounded-full text-xs font-semibold"
             style={{ background: "#f0f0f0", color: "#444" }}>
             Available for work
@@ -220,12 +220,10 @@ function Hero() {
           <h1 className="font-black uppercase leading-[0.95] tracking-tight mb-6 text-white"
             style={{ fontSize: "clamp(2.6rem, 7vw, 4.8rem)" }}>
             I'M A{" "}
-            <span style={{ color: NEON }}>PRODUCT<br />DESIGNER</span><br />
-            CRAFTING<br />
-            [FIELD] PRODUCTS
+            <span style={{ color: NEON }}>PRODUCT<br />DESIGNER</span>
           </h1>
           <p className="text-white/55 text-base max-w-md leading-relaxed">
-            [Your short bio — one to two sentences about your background and what you do.]
+            2+ years experience in e-commerce & global platforms. An adventurous designer passionate about exploring and learning new things.
           </p>
         </div>
 
@@ -246,16 +244,16 @@ function Hero() {
 
 /* ── Featured Projects ─────────────────────────────────────────── */
 const FEATURED = [
-  { title: "[Project Title One]", tag: "Mobile App" },
-  { title: "[Project Title Two]", tag: "Mobile App" },
-  { title: "[Project Title Three]", tag: "Mobile App" },
-  { title: "[Project Title Four]", tag: "Mobile App & Website" },
+  { title: "直播间进间链路设计", tags: ["框架创新", "0-1设计", "设计专利", "全链路设计"] },
+  { title: "评价填写链路优化",   tags: ["AIGC", "交互优化", "提效率"] },
+  { title: "商品评价导购链路优化", tags: ["UI改版", "促转化"] },
+  { title: "春节送礼物项目",     tags: ["0-1搭建", "紧急项目", "多端设计"] },
 ];
 
 const SIDE = [
-  { title: "[Side Project One]", tag: "[Company]" },
-  { title: "[Side Project Two]", tag: "[Company]" },
-  { title: "[Side Project Three]", tag: "[Company]" },
+  { title: "11·11营销设计",   tags: ["大促", "UI", "组件"] },
+  { title: "B 端商家侧设计",  tags: ["to B", "AI"] },
+  { title: "tiktok实习项目",  tags: ["to C", "广告样式"] },
 ];
 
 function Projects() {
@@ -274,10 +272,14 @@ function Projects() {
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <ImgPlaceholder label="Project Image" style={{ height: 260, borderRadius: 0, border: "none" }} />
               <div className="p-5">
-                <p className="font-bold text-white text-base leading-snug mb-2 group-hover:text-[#b5f23d] transition-colors">
+                <p className="font-bold text-white text-base leading-snug mb-3 group-hover:text-[#b5f23d] transition-colors">
                   {p.title}
                 </p>
-                <span className="text-xs text-white/40 border border-white/10 px-2.5 py-0.5 rounded-full">{p.tag}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {p.tags.map((tag) => (
+                    <span key={tag} className="text-xs text-white/40 border border-white/10 px-2.5 py-0.5 rounded-full">{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </Reveal>
@@ -297,10 +299,14 @@ function Projects() {
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
               <ImgPlaceholder label="Project Image" style={{ height: 180, borderRadius: 0, border: "none" }} />
               <div className="p-4">
-                <p className="font-bold text-white text-sm leading-snug mb-1.5 group-hover:text-[#b5f23d] transition-colors">
+                <p className="font-bold text-white text-sm leading-snug mb-2 group-hover:text-[#b5f23d] transition-colors">
                   {p.title}
                 </p>
-                <span className="text-xs text-white/35">{p.tag}</span>
+                <div className="flex flex-wrap gap-1">
+                  {p.tags.map((tag) => (
+                    <span key={tag} className="text-[0.65rem] text-white/35 border border-white/10 px-2 py-0.5 rounded-full">{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </Reveal>
@@ -324,10 +330,12 @@ function About() {
         {/* Text + stats */}
         <div className="flex-1">
           <Reveal>
-            <p className="text-white/55 text-base leading-relaxed mb-10 max-w-lg">
-              [Your story — two to three sentences about your background, experience,
-              and what drives you as a designer. Make it personal and genuine.]
-            </p>
+            <ul className="text-white/55 text-base leading-relaxed mb-10 max-w-lg space-y-3">
+              <li className="flex items-start gap-2"><span style={{ color: NEON }}>→</span> Global & local design vision, data-driven and self-motivated.</li>
+              <li className="flex items-start gap-2"><span style={{ color: NEON }}>→</span> Keep track of industry trends and focus on real user insights.</li>
+              <li className="flex items-start gap-2"><span style={{ color: NEON }}>→</span> Diverse aesthetics with AIGC skills to boost design efficiency.</li>
+              <li className="flex items-start gap-2"><span style={{ color: NEON }}>→</span> Good at team collaboration and accumulating design assets.</li>
+            </ul>
           </Reveal>
 
           {/* Stats */}
@@ -366,7 +374,7 @@ function UIWall() {
     <section className="py-12 overflow-hidden">
       <Reveal>
         <h2 className="font-black text-white mb-8 px-6 max-w-6xl mx-auto" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
-          Wall of UI Visuals Works
+          一些AI练习
         </h2>
       </Reveal>
       <div className="wall-track">
@@ -407,13 +415,13 @@ function Contact() {
 
         <Reveal delay={180}>
           <div className="flex flex-wrap justify-center gap-5 mb-14 text-sm text-white/40">
-            <a href="tel:+00000000000" className="hover:text-white transition-colors">+00 00000 00000</a>
+            <a href="tel:+8618842417092" className="hover:text-white transition-colors">+86 18842417092</a>
             <span>Email:</span>
-            <a href="mailto:your@email.com" className="hover:text-white transition-colors">your@email.com</a>
+            <a href="mailto:906074545@qq.com" className="hover:text-white transition-colors">906074545@qq.com</a>
           </div>
         </Reveal>
 
-        <p className="text-white/20 text-xs">© [Your Name] {new Date().getFullYear()}</p>
+        <p className="text-white/20 text-xs">© Le Tong 2026</p>
       </div>
     </section>
   );
