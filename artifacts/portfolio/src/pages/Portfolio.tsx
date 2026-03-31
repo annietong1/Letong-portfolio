@@ -212,14 +212,14 @@ function ScrollIndicator() {
 function Hero() {
   return (
     <section id="home" className="relative min-h-[calc(100vh-80px)] flex flex-col">
-      <div className="flex-1 max-w-6xl mx-auto w-full px-6 pt-14 pb-8 flex flex-col md:flex-row items-start justify-between gap-10">
+      <div className="flex-1 max-w-6xl mx-auto w-full px-6 pt-28 pb-8 flex flex-col md:flex-row items-start justify-between gap-10">
         {/* Left */}
         <div className="flex-1 min-w-0 pt-4">
           <p className="text-white/50 text-sm font-medium mb-5 flex items-center gap-2">
             Hello <span>👋</span>, great to have you here
           </p>
           <h1 className="font-black uppercase leading-[0.95] tracking-tight mb-6 text-white"
-            style={{ fontSize: "clamp(2.6rem, 7vw, 4.8rem)" }}>
+            style={{ fontSize: "clamp(3rem, 8.5vw, 6rem)" }}>
             I'M A{" "}
             <span style={{ color: NEON }}>PRODUCT<br />DESIGNER</span>
           </h1>
