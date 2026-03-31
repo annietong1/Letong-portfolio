@@ -252,9 +252,9 @@ const FEATURED = [
 ];
 
 const SIDE = [
-  { title: "11·11营销设计",   tags: ["大促", "UI", "组件"] },
-  { title: "B 端商家侧设计",  tags: ["to B", "AI"] },
-  { title: "TikTok internship project",  tags: ["to C", "广告样式"] },
+  { title: "11·11营销设计",          tags: ["大促", "UI", "组件"],  img: "/side1.png" },
+  { title: "B 端商家侧设计",          tags: ["to B", "AI"],          img: "/side2.png" },
+  { title: "TikTok internship project", tags: ["to C", "广告样式"], img: "/side3.png" },
 ];
 
 function Projects() {
@@ -301,7 +301,10 @@ function Projects() {
           <Reveal key={i} delay={i * 70}>
             <div className="project-card rounded-2xl overflow-hidden cursor-pointer group"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <ImgPlaceholder label="Project Image" style={{ height: 180, borderRadius: 0, border: "none" }} />
+              <div style={{ width: "100%", overflow: "hidden", background: "rgba(255,255,255,0.03)" }}>
+                <img src={p.img} alt={p.title}
+                  style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+              </div>
               <div className="p-4">
                 <p className="font-bold text-white text-sm leading-snug mb-2 group-hover:text-[#b5f23d] transition-colors">
                   {p.title}
@@ -500,7 +503,7 @@ function About() {
               {[
                 { target: 2,  suffix: "+", label: "Years of Experience" },
                 { target: 4,  suffix: "+", label: "Completed Projects" },
-                { target: 2,  suffix: "+", label: "Companies worked" },
+                { target: 3,  suffix: "+", label: "Companies worked" },
               ].map((s) => (
                 <div key={s.label}>
                   <div className="font-black text-5xl text-white mb-1">
@@ -515,7 +518,10 @@ function About() {
 
         {/* Photo */}
         <Reveal delay={150} className="flex-1 w-full">
-          <ImgPlaceholder label="Your Photo" style={{ height: 420, width: "100%" }} />
+          <div className="rounded-2xl overflow-hidden w-full">
+            <img src="/about-photo.png" alt="About Le Tong"
+              style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+          </div>
         </Reveal>
       </div>
     </section>
