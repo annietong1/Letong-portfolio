@@ -90,7 +90,7 @@ function Navbar() {
         {/* logo */}
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
-            style={{ background: NEON, color: BG }}>安</div>
+            style={{ background: NEON, color: BG }}>A</div>
           <span className="text-sm font-bold text-white hidden xs:inline">Annie</span>
         </div>
         <div className="hidden sm:flex items-center gap-5 ml-1">
@@ -253,7 +253,7 @@ const FEATURED = [
 const SIDE = [
   { title: "11·11营销设计",   tags: ["大促", "UI", "组件"] },
   { title: "B 端商家侧设计",  tags: ["to B", "AI"] },
-  { title: "tiktok实习项目",  tags: ["to C", "广告样式"] },
+  { title: "TikTok internship project",  tags: ["to C", "广告样式"] },
 ];
 
 function Projects() {
@@ -374,7 +374,7 @@ function UIWall() {
     <section className="py-12 overflow-hidden">
       <Reveal>
         <h2 className="font-black text-white mb-8 px-6 max-w-6xl mx-auto" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
-          一些AI练习
+          Some AI Practices
         </h2>
       </Reveal>
       <div className="wall-track">
@@ -401,16 +401,6 @@ function Contact() {
           <p className="text-white/45 text-base mb-10">
             Open to new roles, feedback, or a simple coffee chat.
           </p>
-        </Reveal>
-
-        <Reveal delay={140}>
-          <div className="flex flex-wrap justify-center gap-4 mb-14">
-            {["Linkedin", "Medium", "Behance", "Instagram"].map((name) => (
-              <a key={name} href="#"
-                className="text-sm font-semibold px-5 py-2.5 rounded-full border text-white/60 hover:text-white hover:border-white/40 transition-all"
-                style={{ borderColor: "rgba(255,255,255,0.15)" }}>{name}</a>
-            ))}
-          </div>
         </Reveal>
 
         <Reveal delay={180}>
