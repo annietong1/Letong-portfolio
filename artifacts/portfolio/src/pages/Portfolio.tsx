@@ -393,7 +393,7 @@ function WorkExpList() {
             <div
               className="rounded-xl px-6 py-5 transition-all duration-300 cursor-default"
               style={{
-                borderLeft: `2px solid ${isHovered ? NEON : isFull ? NEON : "rgba(255,255,255,0.12)"}`,
+                borderLeft: `2px solid ${isHovered ? NEON : "rgba(255,255,255,0.12)"}`,
                 background: isHovered ? "rgba(181,242,61,0.05)" : "transparent",
               }}
               onMouseEnter={() => setHovered(i)}
@@ -403,12 +403,12 @@ function WorkExpList() {
                 <span className={`font-black transition-colors duration-200 ${isFull ? "text-xl" : "text-base"}`}
                   style={{ color: isHovered ? NEON : "white" }}>{job.company}</span>
                 <span className="text-[0.62rem] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                  style={{ background: isFull ? NEON : "rgba(255,255,255,0.1)", color: isFull ? BG : "rgba(255,255,255,0.5)" }}>
+                  style={{ background: isFull ? "rgba(181,242,61,0.15)" : "rgba(255,255,255,0.1)", color: isFull ? NEON : "rgba(255,255,255,0.5)" }}>
                   {isFull ? "Full-time" : "Internship"}
                 </span>
               </div>
               <p className={`mb-1 transition-colors duration-200 ${isFull ? "text-base font-semibold" : "text-sm font-medium"}`}
-                style={{ color: isHovered ? "rgba(181,242,61,0.85)" : isFull ? NEON : "rgba(255,255,255,0.55)" }}>
+                style={{ color: isHovered ? "rgba(181,242,61,0.85)" : "rgba(255,255,255,0.55)" }}>
                 {job.role}
               </p>
               <p className="text-xs text-white/30 mb-4 font-medium">{job.period}</p>
