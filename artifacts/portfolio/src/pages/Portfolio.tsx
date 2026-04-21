@@ -82,7 +82,10 @@ function Navbar() {
   ];
   const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault(); setMob(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    const onHome = !window.location.hash.startsWith("#/");
+    const scrollTo = () => document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    if (onHome) { scrollTo(); }
+    else { window.location.hash = ""; setTimeout(scrollTo, 60); }
   };
   return (
     <header className="sticky top-0 z-50 flex justify-center pt-5 pb-2 px-4">
@@ -267,27 +270,37 @@ function Projects() {
         </h2>
       </Reveal>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-20">
-        {FEATURED.map((p, i) => (
-          <Reveal key={i} delay={i * 80}>
-            <div className="project-card rounded-2xl overflow-hidden cursor-pointer group"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div style={{ width: "100%", overflow: "hidden", background: "rgba(255,255,255,0.03)" }}>
-                <img src={p.img} alt={p.title}
-                  style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
-              </div>
-              <div className="p-5">
-                <p className="font-bold text-white text-base leading-snug mb-3 group-hover:text-[#b5f23d] transition-colors">
-                  {p.title}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {p.tags.map((tag) => (
-                    <span key={tag} className="text-xs text-white/40 border border-white/10 px-2.5 py-0.5 rounded-full">{tag}</span>
-                  ))}
+        {FEATURED.map((p, i) => {
+          const linkHash = i === 0 ? "#/project/1" : null;
+          const handleClick = linkHash ? () => { window.location.hash = linkHash; } : undefined;
+          return (
+            <Reveal key={i} delay={i * 80}>
+              <div
+                className="project-card rounded-2xl overflow-hidden cursor-pointer group"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                onClick={handleClick}
+                role={linkHash ? "link" : undefined}
+                tabIndex={linkHash ? 0 : undefined}
+                onKeyDown={linkHash ? (e) => { if (e.key === "Enter") handleClick?.(); } : undefined}
+              >
+                <div style={{ width: "100%", overflow: "hidden", background: "rgba(255,255,255,0.03)" }}>
+                  <img src={p.img} alt={p.title}
+                    style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+                </div>
+                <div className="p-5">
+                  <p className="font-bold text-white text-base leading-snug mb-3 group-hover:text-[#b5f23d] transition-colors">
+                    {p.title}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.tags.map((tag) => (
+                      <span key={tag} className="text-xs text-white/40 border border-white/10 px-2.5 py-0.5 rounded-full">{tag}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Reveal>
-        ))}
+            </Reveal>
+          );
+        })}
       </div>
 
       {/* Side Projects */}
@@ -635,8 +648,52 @@ function Contact() {
   );
 }
 
+/* ── Project Detail Page ───────────────────────────────────────── */
+function ProjectDetail({ title, image }: { title: string; image: string }) {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const goHome = () => { window.location.hash = ""; };
+  return (
+    <div style={{ background: BG, minHeight: "100vh" }}>
+      <Navbar />
+      <main className="max-w-5xl mx-auto px-6 pt-10 pb-24">
+        <button
+          onClick={goHome}
+          className="inline-flex items-center gap-2 text-sm font-semibold mb-8 transition-colors"
+          style={{ color: NEON }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.75"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+        >
+          ← Back to Home
+        </button>
+        <h1 className="font-black text-white mb-8" style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)" }}>
+          {title}
+        </h1>
+        <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <img src={image} alt={title}
+            style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+        </div>
+      </main>
+    </div>
+  );
+}
+
+/* ── Hash routing ──────────────────────────────────────────────── */
+function useHashRoute() {
+  const [hash, setHash] = useState(typeof window !== "undefined" ? window.location.hash : "");
+  useEffect(() => {
+    const onChange = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
+  }, []);
+  return hash;
+}
+
 /* ── Root ──────────────────────────────────────────────────────── */
 export default function Portfolio() {
+  const hash = useHashRoute();
+  if (hash === "#/project/1") {
+    return <ProjectDetail title={FEATURED[0].title} image="/proj1-detail.png" />;
+  }
   return (
     <div style={{ background: BG, minHeight: "100vh" }}>
       <Navbar />
