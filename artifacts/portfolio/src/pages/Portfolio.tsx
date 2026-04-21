@@ -649,28 +649,228 @@ function Contact() {
 }
 
 /* ── Project Detail Page ───────────────────────────────────────── */
-function ProjectDetail({ title, image }: { title: string; image: string }) {
+function DetailImage({ src, alt }: { src: string; alt: string }) {
+  return (
+    <Reveal>
+      <div className="rounded-2xl overflow-hidden my-8"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <img src={src} alt={alt} loading="lazy"
+          style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+      </div>
+    </Reveal>
+  );
+}
+
+function StepHeader({ num, label, title, sub }: { num: string; label: string; title: string; sub?: string }) {
+  return (
+    <Reveal>
+      <div className="mt-16 mb-4">
+        <div className="flex items-baseline gap-3 mb-3">
+          <span className="font-black" style={{ color: NEON, fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>{num}</span>
+          <span className="text-xs uppercase tracking-[0.2em] text-white/50">{label}</span>
+        </div>
+        <h2 className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)" }}>{title}</h2>
+        {sub && <p className="text-white/60 mt-3 max-w-2xl leading-relaxed">{sub}</p>}
+      </div>
+    </Reveal>
+  );
+}
+
+function ProjectDetail({ title }: { title: string }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   const goHome = () => { window.location.hash = ""; };
+
+  const cardStyle: React.CSSProperties = {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: "1rem",
+    padding: "1.25rem 1.4rem",
+  };
+
   return (
     <div style={{ background: BG, minHeight: "100vh" }}>
       <Navbar />
       <main className="max-w-5xl mx-auto px-6 pt-10 pb-24">
         <button
           onClick={goHome}
-          className="inline-flex items-center gap-2 text-sm font-semibold mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-opacity"
           style={{ color: NEON }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.75"; }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.7"; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
         >
           ← Back to Home
         </button>
-        <h1 className="font-black text-white mb-8" style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)" }}>
-          {title}
-        </h1>
-        <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <img src={image} alt={title}
-            style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+
+        {/* Hero */}
+        <Reveal>
+          <div className="text-center mb-4">
+            <span className="font-bold tracking-[0.3em] text-xs" style={{ color: NEON }}>STEP 1</span>
+          </div>
+          <h1 className="font-black text-white text-center mb-6"
+            style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)", letterSpacing: "0.02em" }}>
+            {title}
+          </h1>
+          <p className="text-white/60 text-center max-w-2xl mx-auto leading-relaxed">
+            Exploring a new card framework for high-exposure entry scenarios — a full-funnel
+            capability that surfaces combined benefit information within tightly limited space.
+          </p>
+        </Reveal>
+
+        {/* Background */}
+        <DetailImage src="/proj1-s0.jpg" alt="Single card vs composite card preview" />
+        <Reveal>
+          <div className="grid sm:grid-cols-2 gap-4 mb-4">
+            <div style={cardStyle}>
+              <p className="text-xs uppercase tracking-wider text-white/50 mb-2">Before · Single Card</p>
+              <p className="text-white/85 leading-relaxed">
+                Either show product info <em>or</em> a marketing campaign — only one type at a time.
+              </p>
+            </div>
+            <div style={cardStyle}>
+              <p className="text-xs uppercase tracking-wider mb-2" style={{ color: NEON }}>After · Composite Card</p>
+              <p className="text-white/85 leading-relaxed">
+                Display two information types in parallel, surfacing a richer benefit combination.
+              </p>
+            </div>
+          </div>
+          <p className="text-center text-white/80 my-8">
+            <span className="text-white/50">Goal:</span>{" "}
+            <span className="font-semibold">Show <span style={{ color: NEON }}>combined benefit points</span> within a limited entry-card area.</span>
+          </p>
+        </Reveal>
+
+        {/* Validation */}
+        <Reveal>
+          <div className="text-center mt-12 mb-6">
+            <h3 className="font-black text-white" style={{ fontSize: "clamp(1.4rem, 2.6vw, 1.8rem)" }}>
+              <span style={{ color: NEON }}>◆</span> Validation
+            </h3>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div style={cardStyle}>
+              <p className="text-white/85 leading-relaxed">
+                Does combining benefit points actually drive entry into the live room?
+              </p>
+            </div>
+            <div style={cardStyle}>
+              <p className="text-white/85 leading-relaxed">
+                In a combined state, what information attracts users most strongly to enter?
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Step 1 — Define the Framework */}
+        <StepHeader
+          num="01"
+          label="Frame"
+          title="Define the Framework"
+          sub="Allocate weight between main and sub cards — find the balance where the main card stands out enough while the sub card remains identifiable. Settled on an 8 : 2 main-to-sub ratio."
+        />
+        <DetailImage src="/proj1-s2.jpg" alt="Main card and sub card layout" />
+
+        {/* Step 2 — Fill Content */}
+        <StepHeader
+          num="02"
+          label="Content"
+          title="Fill the Framework with Content"
+          sub="Adapt content so info is 'fit and readable' on the main card and 'recognizable' on the sub card. Two info families feed the system: Product Info and Marketing Info."
+        />
+        <Reveal>
+          <div className="grid sm:grid-cols-2 gap-4 mb-2">
+            <div style={cardStyle}>
+              <p className="font-bold mb-3" style={{ color: NEON }}>Product Info</p>
+              <ul className="space-y-2 text-white/80 text-sm leading-relaxed">
+                <li>• <b className="text-white">Standard product</b> — title, image, selling points</li>
+                <li>• <b className="text-white">AI summary</b> — generated highlights for select items</li>
+              </ul>
+            </div>
+            <div style={cardStyle}>
+              <p className="font-bold mb-3" style={{ color: NEON }}>Marketing Info</p>
+              <ul className="space-y-2 text-white/80 text-sm leading-relaxed">
+                <li>• <b className="text-white">Coupon</b> — platform / merchant vouchers</li>
+                <li>• <b className="text-white">Lottery</b> — real-time live-room giveaways</li>
+              </ul>
+            </div>
+          </div>
+        </Reveal>
+
+        <DetailImage src="/proj1-s3.jpg" alt="Regular product card and AI summary card details" />
+        <DetailImage src="/proj1-s4.jpg" alt="Coupon card and lottery card details" />
+        <DetailImage src="/proj1-s5.jpg" alt="Lottery card animation states" />
+
+        {/* Step 3 — Compose */}
+        <StepHeader
+          num="03"
+          label="Combine"
+          title="Compose & Run Strategy Experiments"
+          sub="Build a combinable “content material library”: 4 main-card types × 4 sub-card types. Then A/B test which composition performs best — testing the question 'how should we arrange them to hit hardest?'"
+        />
+        <DetailImage src="/proj1-s6.jpg" alt="Experiment group 1 — product info as main card" />
+        <DetailImage src="/proj1-s7.jpg" alt="Experiment group 2 — marketing info as main card" />
+
+        {/* Results */}
+        <Reveal>
+          <div className="text-center mt-16 mb-8">
+            <span className="font-bold tracking-[0.3em] text-xs" style={{ color: NEON }}>RESULTS</span>
+            <h2 className="font-black text-white mt-3" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)" }}>
+              Composite Card · Data Conclusions
+            </h2>
+            <p className="text-white/60 mt-3 max-w-2xl mx-auto leading-relaxed">
+              Validated that the composite-card form works for out-of-room display, and that
+              <span style={{ color: NEON }}> marketing info acts as the universal “hook”</span> driving clicks.
+            </p>
+          </div>
+
+          <div className="rounded-2xl p-6 sm:p-8 mb-6"
+            style={{ background: "rgba(181,242,61,0.04)", border: "1px solid rgba(181,242,61,0.25)" }}>
+            <div className="flex items-center gap-2 mb-5">
+              <span className="text-xs font-bold px-2 py-1 rounded-full"
+                style={{ background: NEON, color: BG }}>RECOMMENDED</span>
+              <span className="text-white/80 text-sm">Group 2 — Marketing info as main card</span>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-6">
+              {[
+                ["+1.145%", "Single-column entry rate"],
+                ["+1.129%", "Non-auto view sessions"],
+                ["+0.983%", "Live-room overall GMV"],
+              ].map(([n, l]) => (
+                <div key={l}>
+                  <p className="font-black" style={{ color: NEON, fontSize: "clamp(1.6rem, 3vw, 2rem)" }}>{n}</p>
+                  <p className="text-white/60 text-sm mt-1">{l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl p-6 sm:p-8" style={cardStyle}>
+            <p className="text-white/60 text-sm mb-5">Group 1 — Product info as main card</p>
+            <div className="grid sm:grid-cols-3 gap-6">
+              {[
+                ["+0.905%", "Single-column entry rate"],
+                ["+0.937%", "Non-auto view sessions"],
+                ["-0.133%", "Live-room overall GMV"],
+              ].map(([n, l]) => (
+                <div key={l}>
+                  <p className="font-black text-white/70" style={{ fontSize: "clamp(1.4rem, 2.6vw, 1.7rem)" }}>{n}</p>
+                  <p className="text-white/40 text-sm mt-1">{l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Footer back */}
+        <div className="text-center mt-20">
+          <button
+            onClick={goHome}
+            className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity"
+            style={{ color: NEON }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.7"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+          >
+            ← Back to Home
+          </button>
         </div>
       </main>
     </div>
@@ -692,7 +892,7 @@ function useHashRoute() {
 export default function Portfolio() {
   const hash = useHashRoute();
   if (hash === "#/project/1") {
-    return <ProjectDetail title={FEATURED[0].title} image="/proj1-detail.png" />;
+    return <ProjectDetail title={FEATURED[0].title} />;
   }
   return (
     <div style={{ background: BG, minHeight: "100vh" }}>
