@@ -743,7 +743,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/figma-f7.jpg" alt="Composite Card Framework overview" />
+        <DetailImg src="/f8-new.jpg" alt="Before vs After — single card to composite card" />
 
         {/* Before / After */}
         <Reveal>
@@ -767,7 +767,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/figma-f8.jpg" alt="Problem framing, validation questions, and framework ratio" />
+        <DetailImg src="/f9-new.jpg" alt="Framework structure — 8:2 main/sub card ratio" />
 
         {/* Validation */}
         <Reveal>
@@ -812,7 +812,7 @@ function ProjectDetail({ title }: { title: string }) {
         <SectionDivider num="2" zh="" en="Content"
           sub="Fill the framework with typed content. Info must fit and read clearly on the main card, and be recognisable on the sub card." />
 
-        <DetailImg src="/figma-f10.jpg" alt="4 card types across Product Info and Marketing Info families" />
+        <DetailImg src="/f10-new.jpg" alt="Content taxonomy — 4 card types across Product Info and Marketing Info" />
 
         <Reveal>
           <div className="grid sm:grid-cols-2 gap-4 mb-6">
@@ -849,31 +849,31 @@ function ProjectDetail({ title }: { title: string }) {
           "Image, title, selling points, CTA — priority: in-room bestseller › ranking › price › anchor points › reviews",
           "Two status modes: presenter active / recommendation",
         ]} />
-        <DetailImg src="/figma-f11.jpg" alt="Standard product card — wireframe, examples, and selling-point priority" />
+        <DetailImg src="/f11-new.jpg" alt="Standard product card — wireframe, variants, and selling-point priority" />
 
         <CardTypeHeader label="AI Summary Card" bullets={[
           "Alternates with standard product in a carousel",
           "Avatar composite boosts authenticity; 24–28 char condensed summary as selling-point magnifier",
         ]} />
-        <DetailImg src="/figma-f12.jpg" alt="AI Summary card — structure and phone mockups" />
+        <DetailImg src="/f12-new.jpg" alt="AI Summary card — structure and phone mockups" />
 
         <CardTypeHeader label="Coupon Card" bullets={[
           "Shows face value, type, conditions, CTA — supports 3 tiers (¥9 / ¥9.9 / ¥999.9)",
           "Animated value escalation (¥5 → ¥9 → ¥25) strengthens perceived incentive; includes gov-subsidy coupon type",
         ]} />
-        <DetailImg src="/figma-f13.jpg" alt="Coupon card — variety, animated value, phone mockup" />
+        <DetailImg src="/f13-new.jpg" alt="Coupon card — variety, animated value, phone mockup" />
 
         <CardTypeHeader label="Lottery Card" bullets={[
           "Lucky-bag animation tied to in-room draw; reinforces brand memory and experience consistency",
           "Dynamic copy: countdown timer, participant count, win rate",
         ]} />
-        <DetailImg src="/figma-f14.jpg" alt="Lottery card — animation states and dynamic selling points" />
+        <DetailImg src="/f14-new.jpg" alt="Lottery card — animation states and dynamic selling points" />
 
         {/* SECTION 3 — EXPERIMENTS */}
         <SectionDivider num="3" zh="" en="Experiments"
           sub="4 main-card types × 4 sub-card types form a combinable material library. Two A/B groups test the key question: product or marketing as the primary hook?" />
 
-        <DetailImg src="/figma-f15.jpg" alt="Combinable content material library" />
+        <DetailImg src="/f15-new.jpg" alt="Combinable content material library — 4×4 combinations" />
 
         <Reveal>
           <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -888,7 +888,11 @@ function ProjectDetail({ title }: { title: string }) {
           </div>
         </Reveal>
 
-        <DetailImg src="/figma-f16.jpg" alt="A/B experiment groups and data conclusions" />
+        <DetailImg src="/f16-new.jpg" alt="A/B Experiment Group 1 — Product info as main card" />
+
+        <DetailImg src="/f17-new.jpg" alt="A/B Experiment Group 2 — Marketing info as main card" />
+
+        <DetailImg src="/f18-new.jpg" alt="Step 1 data conclusions — composite card results" />
 
         {/* RESULTS */}
         <Reveal>
