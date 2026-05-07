@@ -648,29 +648,57 @@ function Contact() {
   );
 }
 
-/* ── Project Detail Page ───────────────────────────────────────── */
-function DetailImage({ src, alt }: { src: string; alt: string }) {
+/* ── Project Detail helpers ────────────────────────────────────── */
+function DetailImg({ src, alt }: { src: string; alt: string }) {
   return (
     <Reveal>
-      <div className="rounded-2xl overflow-hidden my-8"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="rounded-2xl overflow-hidden my-10"
+        style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
         <img src={src} alt={alt} loading="lazy"
-          style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
+          style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
     </Reveal>
   );
 }
 
-function StepHeader({ num, label, title, sub }: { num: string; label: string; title: string; sub?: string }) {
+const GlassCard: React.FC<React.PropsWithChildren<{ neon?: boolean; className?: string }>> = ({ children, neon, className = "" }) => (
+  <div className={className} style={{
+    background: neon ? "rgba(181,242,61,0.04)" : "rgba(255,255,255,0.03)",
+    border: `1px solid ${neon ? "rgba(181,242,61,0.3)" : "rgba(255,255,255,0.08)"}`,
+    borderRadius: "1rem", padding: "1.25rem 1.5rem",
+  }}>{children}</div>
+);
+
+function SectionDivider({ num, zh, en, sub }: { num: string; zh: string; en: string; sub?: string }) {
   return (
     <Reveal>
-      <div className="mt-16 mb-4">
-        <div className="flex items-baseline gap-3 mb-3">
-          <span className="font-black" style={{ color: NEON, fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>{num}</span>
-          <span className="text-xs uppercase tracking-[0.2em] text-white/50">{label}</span>
+      <div className="mt-20 mb-8 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="font-black text-4xl" style={{ color: NEON }}>{num}</span>
+          <div>
+            <p className="font-black text-white" style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)" }}>{zh}</p>
+            <p className="text-xs text-white/40 tracking-widest uppercase mt-0.5">{en}</p>
+          </div>
         </div>
-        <h2 className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)" }}>{title}</h2>
-        {sub && <p className="text-white/60 mt-3 max-w-2xl leading-relaxed">{sub}</p>}
+        {sub && <p className="text-white/55 text-sm leading-relaxed max-w-2xl mt-2">{sub}</p>}
+      </div>
+    </Reveal>
+  );
+}
+
+function CardTypeHeader({ label, color = NEON, bullets }: { label: string; color?: string; bullets: string[] }) {
+  return (
+    <Reveal>
+      <div className="mb-4 mt-8">
+        <span className="inline-block font-black text-sm px-3 py-1 rounded-md mb-3"
+          style={{ background: color, color: "#0b150b" }}>{label}</span>
+        <ul className="space-y-1">
+          {bullets.map((b) => (
+            <li key={b} className="text-white/65 text-sm flex gap-2">
+              <span className="text-white/25 shrink-0">•</span>{b}
+            </li>
+          ))}
+        </ul>
       </div>
     </Reveal>
   );
@@ -680,195 +708,253 @@ function ProjectDetail({ title }: { title: string }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   const goHome = () => { window.location.hash = ""; };
 
-  const cardStyle: React.CSSProperties = {
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.07)",
-    borderRadius: "1rem",
-    padding: "1.25rem 1.4rem",
-  };
-
   return (
     <div style={{ background: BG, minHeight: "100vh" }}>
       <Navbar />
-      <main className="max-w-5xl mx-auto px-6 pt-10 pb-24">
-        <button
-          onClick={goHome}
-          className="inline-flex items-center gap-2 text-sm font-semibold mb-10 transition-opacity"
+      <main className="max-w-5xl mx-auto px-6 pt-10 pb-28">
+
+        {/* Back */}
+        <button onClick={goHome}
+          className="inline-flex items-center gap-2 text-sm font-semibold mb-12 transition-opacity"
           style={{ color: NEON }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.7"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-        >
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.65"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}>
           ← Back to Home
         </button>
 
-        {/* Hero */}
+        {/* ── HERO ── */}
         <Reveal>
-          <div className="text-center mb-4">
-            <span className="font-bold tracking-[0.3em] text-xs" style={{ color: NEON }}>STEP 1</span>
-          </div>
+          <p className="text-center font-black tracking-[0.35em] text-xs mb-5" style={{ color: NEON }}>STEP 1</p>
           <h1 className="font-black text-white text-center mb-6"
-            style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)", letterSpacing: "0.02em" }}>
+            style={{ fontSize: "clamp(2.2rem, 5.5vw, 3.6rem)", letterSpacing: "0.01em", lineHeight: 1.1 }}>
             {title}
           </h1>
-          <p className="text-white/60 text-center max-w-2xl mx-auto leading-relaxed">
-            Exploring a new card framework for high-exposure entry scenarios — a full-funnel
-            capability that surfaces combined benefit information within tightly limited space.
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {["新框架探索能力 · New Framework for High-Exposure Scenarios", "全链路能力 · Full-Funnel Capability"].map((tag) => (
+              <span key={tag} className="text-xs font-semibold px-3 py-1.5 rounded-full"
+                style={{ border: `1px solid ${NEON}`, color: NEON, letterSpacing: "0.03em" }}>
+                {tag}
+              </span>
+            ))}
+          </div>
+          <p className="text-white/50 text-center max-w-2xl mx-auto leading-relaxed text-sm">
+            Exploring a new entry-card framework for high-exposure out-of-room scenarios that surfaces combined benefit points across the full conversion funnel.
           </p>
         </Reveal>
 
-        {/* Background */}
-        <DetailImage src="/proj1-s0.jpg" alt="Single card vs composite card preview" />
+        <DetailImg src="/figma-f7.jpg" alt="STEP 1 — Composite Card Framework title" />
+
+        {/* Before / After */}
         <Reveal>
-          <div className="grid sm:grid-cols-2 gap-4 mb-4">
-            <div style={cardStyle}>
-              <p className="text-xs uppercase tracking-wider text-white/50 mb-2">Before · Single Card</p>
-              <p className="text-white/85 leading-relaxed">
-                Either show product info <em>or</em> a marketing campaign — only one type at a time.
+          <div className="grid sm:grid-cols-2 gap-4 mb-8">
+            <GlassCard>
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">改前 · Before — Single Card</p>
+              <p className="text-white/75 text-sm leading-relaxed">
+                Either display product information <em>or</em> a marketing campaign — only one type at a time is supported.
               </p>
-            </div>
-            <div style={cardStyle}>
-              <p className="text-xs uppercase tracking-wider mb-2" style={{ color: NEON }}>After · Composite Card</p>
-              <p className="text-white/85 leading-relaxed">
-                Display two information types in parallel, surfacing a richer benefit combination.
+            </GlassCard>
+            <GlassCard neon>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: NEON }}>改后 · After — Composite Card</p>
+              <p className="text-white/80 text-sm leading-relaxed">
+                Simultaneously surface two types of information. Product and marketing signals visible in one entry card.
               </p>
-            </div>
+            </GlassCard>
           </div>
-          <p className="text-center text-white/80 my-8">
-            <span className="text-white/50">Goal:</span>{" "}
-            <span className="font-semibold">Show <span style={{ color: NEON }}>combined benefit points</span> within a limited entry-card area.</span>
+          <p className="text-center text-sm text-white/55">
+            目的 · Goal —{" "}
+            <span className="font-semibold text-white">
+              Surface <span style={{ color: NEON }}>combined benefit-point information</span> in limited card space
+            </span>
           </p>
         </Reveal>
+
+        <DetailImg src="/figma-f8.jpg" alt="Problem framing: single vs composite card, validation questions, framework ratio" />
 
         {/* Validation */}
         <Reveal>
-          <div className="text-center mt-12 mb-6">
-            <h3 className="font-black text-white" style={{ fontSize: "clamp(1.4rem, 2.6vw, 1.8rem)" }}>
-              <span style={{ color: NEON }}>◆</span> Validation
-            </h3>
-          </div>
+          <p className="text-center font-black text-sm mb-5" style={{ color: NEON }}>🧩 验证 · Validation Hypotheses</p>
           <div className="grid sm:grid-cols-2 gap-4">
-            <div style={cardStyle}>
-              <p className="text-white/85 leading-relaxed">
-                Does combining benefit points actually drive entry into the live room?
+            <GlassCard>
+              <p className="text-xs text-white/40 font-semibold uppercase tracking-wider mb-2">Hypothesis A</p>
+              <p className="text-white/80 text-sm leading-relaxed">
+                Does combining benefit points in a composite card actually drive users to enter the live room?
               </p>
-            </div>
-            <div style={cardStyle}>
-              <p className="text-white/85 leading-relaxed">
-                In a combined state, what information attracts users most strongly to enter?
+            </GlassCard>
+            <GlassCard>
+              <p className="text-xs text-white/40 font-semibold uppercase tracking-wider mb-2">Hypothesis B</p>
+              <p className="text-white/80 text-sm leading-relaxed">
+                Under a composite-card state, what type of information is most effective at attracting entry?
               </p>
-            </div>
+            </GlassCard>
           </div>
         </Reveal>
 
-        {/* Step 1 — Define the Framework */}
-        <StepHeader
-          num="01"
-          label="Frame"
-          title="Define the Framework"
-          sub="Allocate weight between main and sub cards — find the balance where the main card stands out enough while the sub card remains identifiable. Settled on an 8 : 2 main-to-sub ratio."
-        />
-        <DetailImage src="/proj1-s2.jpg" alt="Main card and sub card layout" />
-
-        {/* Step 2 — Fill Content */}
-        <StepHeader
-          num="02"
-          label="Content"
-          title="Fill the Framework with Content"
-          sub="Adapt content so info is 'fit and readable' on the main card and 'recognizable' on the sub card. Two info families feed the system: Product Info and Marketing Info."
-        />
+        <SectionDivider num="1" zh="突破单卡结构，确定框架比例" en="Define the Framework"
+          sub="Allocate visual weight between main and sub cards. Find the sweet spot where the main card stands out while the sub card stays identifiable. Confirmed ratio: main card 8 : sub card 2." />
         <Reveal>
-          <div className="grid sm:grid-cols-2 gap-4 mb-2">
-            <div style={cardStyle}>
-              <p className="font-bold mb-3" style={{ color: NEON }}>Product Info</p>
-              <ul className="space-y-2 text-white/80 text-sm leading-relaxed">
-                <li>• <b className="text-white">Standard product</b> — title, image, selling points</li>
-                <li>• <b className="text-white">AI summary</b> — generated highlights for select items</li>
-              </ul>
-            </div>
-            <div style={cardStyle}>
-              <p className="font-bold mb-3" style={{ color: NEON }}>Marketing Info</p>
-              <ul className="space-y-2 text-white/80 text-sm leading-relaxed">
-                <li>• <b className="text-white">Coupon</b> — platform / merchant vouchers</li>
-                <li>• <b className="text-white">Lottery</b> — real-time live-room giveaways</li>
-              </ul>
-            </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <GlassCard>
+              <p className="font-bold text-white text-sm mb-1">定框架 · Set Structure</p>
+              <p className="text-white/45 text-xs leading-relaxed">Balance main card prominence vs sub card recognisability</p>
+            </GlassCard>
+            <GlassCard neon>
+              <p className="font-bold text-sm mb-1" style={{ color: NEON }}>8 : 2 Ratio</p>
+              <p className="text-white/55 text-xs leading-relaxed">Main card holds core appeal · Sub card delivers supplementary decision info</p>
+            </GlassCard>
+            <GlassCard>
+              <p className="font-bold text-white text-sm mb-1">主卡 / 副卡</p>
+              <p className="text-white/45 text-xs leading-relaxed">Main: core attraction force · Sub: supplementary limiting information</p>
+            </GlassCard>
           </div>
         </Reveal>
 
-        <DetailImage src="/proj1-s3.jpg" alt="Regular product card and AI summary card details" />
-        <DetailImage src="/proj1-s4.jpg" alt="Coupon card and lottery card details" />
-        <DetailImage src="/proj1-s5.jpg" alt="Lottery card animation states" />
+        <SectionDivider num="2" zh="内容兼容框架：主卡装得下、看得清，副卡能识别" en="Fill the Framework with Content"
+          sub="Populate the framework with typed content. Info must be fit and readable on the main card and clearly recognisable on the sub card." />
 
-        {/* Step 3 — Compose */}
-        <StepHeader
-          num="03"
-          label="Combine"
-          title="Compose & Run Strategy Experiments"
-          sub="Build a combinable “content material library”: 4 main-card types × 4 sub-card types. Then A/B test which composition performs best — testing the question 'how should we arrange them to hit hardest?'"
-        />
-        <DetailImage src="/proj1-s6.jpg" alt="Experiment group 1 — product info as main card" />
-        <DetailImage src="/proj1-s7.jpg" alt="Experiment group 2 — marketing info as main card" />
+        <DetailImg src="/figma-f10.jpg" alt="Fill Content — 4 card types across Product Info and Marketing Info families" />
 
-        {/* Results */}
         <Reveal>
-          <div className="text-center mt-16 mb-8">
-            <span className="font-bold tracking-[0.3em] text-xs" style={{ color: NEON }}>RESULTS</span>
-            <h2 className="font-black text-white mt-3" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.2rem)" }}>
-              Composite Card · Data Conclusions
+          <div className="grid sm:grid-cols-2 gap-4 mb-6">
+            <GlassCard>
+              <p className="font-bold mb-3 text-sm" style={{ color: NEON }}>商品信息 · Product Info</p>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-white text-sm font-semibold">常规商品 Standard Product</p>
+                  <p className="text-white/45 text-xs mt-0.5">骨架 — Title, image, selling points · 让人想买</p>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-semibold">AI总结 AI Summary</p>
+                  <p className="text-white/45 text-xs mt-0.5">放大镜 — Real-time AI-generated highlights · 让人秒懂</p>
+                </div>
+              </div>
+            </GlassCard>
+            <GlassCard>
+              <p className="font-bold mb-3 text-sm" style={{ color: NEON }}>营销信息 · Marketing Info</p>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-white text-sm font-semibold">优惠券 Coupon</p>
+                  <p className="text-white/45 text-xs mt-0.5">钩子信息（通用）— Platform &amp; merchant vouchers · 让人掏钱</p>
+                </div>
+                <div>
+                  <p className="text-white text-sm font-semibold">抽奖 Lottery</p>
+                  <p className="text-white/45 text-xs mt-0.5">钩子信息（低成本）— Real-time live-room giveaways · 把人吸引来</p>
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        </Reveal>
+
+        <CardTypeHeader label="常规商品卡 Standard Product Card" bullets={[
+          "Displays product image, title, selling points, and CTA button",
+          "Selling-point priority: 间内热卖 › 榜单 › 价格力 › 主播自设卖点 › 售后保障 › 评价 › 完成文案",
+          "Status variants: 小讲解中 (presenter active) / 为你推荐 (recommendation mode)",
+        ]} />
+        <DetailImg src="/figma-f11.jpg" alt="Standard product card — wireframe, live examples, and selling-point priority chart" />
+
+        <CardTypeHeader label="AI总结商品卡 AI Summary Card" bullets={[
+          "Rotates with standard product information in alternating carousel display",
+          "培养AI总结心智 — Avatar composite display increases perceived authenticity",
+          "商品卖点放大镜 — 24–28 character condensed summary highlights key selling points",
+        ]} />
+        <DetailImg src="/figma-f12.jpg" alt="AI Summary card — structure, phone mockups with avatar display" />
+
+        <CardTypeHeader label="优惠券卡 Coupon Card" bullets={[
+          "Shows voucher face value, coupon type, redemption conditions, and CTA",
+          "兼顾券的多样性 — 3 coupon tiers: ¥9 / ¥9.9 / ¥999.9 (满减 & 组合券)",
+          "金额动起来 — Animated value escalation raises perceived incentive: ¥5 → ¥9 → ¥25",
+          "拓展国补券 — Extends to government-subsidy coupon type (直播间直降20%)",
+        ]} />
+        <DetailImg src="/figma-f13.jpg" alt="Coupon card — diversity, animated value display, and phone mockup" />
+
+        <CardTypeHeader label="抽奖卡 Lottery Card" bullets={[
+          "增加福袋动画 — Lucky-bag animation linked to in-room lottery; reinforces user memory",
+          "动态卖点 — Emphasises urgency & excitement: countdown timer, participant count, win rate",
+          "Live signals: 00:24:58后开奖 · 268人参与｜高中奖率 · 直播间抽奖中，主播喊你来参与",
+        ]} />
+        <DetailImg src="/figma-f14.jpg" alt="Lottery card — lucky bag animation states and dynamic selling points" />
+
+        <SectionDivider num="3" zh="做组合，策略实验" en="Compose & Run A/B Experiments"
+          sub="Build a combinable content material library: 4 main-card types x 4 sub-card types. Run A/B experiments to validate which composition maximises impact." />
+
+        <DetailImg src="/figma-f15.jpg" alt="Combinable content material library — main card 4 types x sub card 4 types" />
+
+        <Reveal>
+          <div className="grid sm:grid-cols-2 gap-4 mb-4">
+            <GlassCard>
+              <p className="text-xs text-white/40 font-semibold uppercase tracking-wider mb-2">实验组1 · Group A</p>
+              <p className="font-bold text-white text-sm mb-1">商品信息做主卡</p>
+              <p className="text-white/55 text-xs leading-relaxed">Product info as main card, paired with sub-card types (subsidies, coupons, lottery, multi-product)</p>
+              <p className="text-white/35 text-xs mt-2">副卡优先级: 国补券 › 普通券 › 抽奖 › 多品</p>
+            </GlassCard>
+            <GlassCard neon>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: NEON }}>实验组2 · Group B</p>
+              <p className="font-bold text-white text-sm mb-1">营销信息做主卡</p>
+              <p className="text-white/60 text-xs leading-relaxed">Marketing info as main card, paired with product sub-cards of varying depths</p>
+              <p className="text-white/35 text-xs mt-2">主卡优先级: 国补券 › 普通券 › 抽奖 › 商品 · 副卡｜商品坑位策略</p>
+            </GlassCard>
+          </div>
+        </Reveal>
+
+        <DetailImg src="/figma-f16.jpg" alt="A/B experiment groups and final data conclusions" />
+
+        {/* ── RESULTS ── */}
+        <Reveal>
+          <div className="text-center mt-16 mb-10">
+            <p className="font-black tracking-[0.3em] text-xs mb-3" style={{ color: NEON }}>STEP 1 · DATA CONCLUSIONS</p>
+            <h2 className="font-black text-white" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.4rem)" }}>
+              组合卡 · 数据结论
             </h2>
-            <p className="text-white/60 mt-3 max-w-2xl mx-auto leading-relaxed">
-              Validated that the composite-card form works for out-of-room display, and that
-              <span style={{ color: NEON }}> marketing info acts as the universal “hook”</span> driving clicks.
+            <p className="text-white/50 mt-4 max-w-2xl mx-auto text-sm leading-relaxed">
+              Validated that the composite-card form works for out-of-room display.{" "}
+              <span style={{ color: NEON }} className="font-semibold">Marketing info is the universal hook driving entry clicks.</span>
             </p>
           </div>
 
-          <div className="rounded-2xl p-6 sm:p-8 mb-6"
-            style={{ background: "rgba(181,242,61,0.04)", border: "1px solid rgba(181,242,61,0.25)" }}>
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-xs font-bold px-2 py-1 rounded-full"
-                style={{ background: NEON, color: BG }}>RECOMMENDED</span>
-              <span className="text-white/80 text-sm">Group 2 — Marketing info as main card</span>
+          <GlassCard neon className="mb-5">
+            <div className="flex flex-wrap items-center gap-2 mb-5">
+              <span className="text-xs font-black px-2.5 py-1 rounded-full"
+                style={{ background: NEON, color: BG }}>推全 · FULL ROLLOUT</span>
+              <span className="text-white/65 text-xs">实验组2 — 营销信息做主卡 / Marketing as main card</span>
             </div>
             <div className="grid sm:grid-cols-3 gap-6">
-              {[
-                ["+1.145%", "Single-column entry rate"],
-                ["+1.129%", "Non-auto view sessions"],
-                ["+0.983%", "Live-room overall GMV"],
-              ].map(([n, l]) => (
-                <div key={l}>
-                  <p className="font-black" style={{ color: NEON, fontSize: "clamp(1.6rem, 3vw, 2rem)" }}>{n}</p>
-                  <p className="text-white/60 text-sm mt-1">{l}</p>
+              {([
+                ["+1.145%", "单列发现进间率", "Single-column entry rate"],
+                ["+1.129%", "非自动观看次数", "Non-auto view sessions"],
+                ["+0.983%", "整体去风极GMV", "E-commerce live-room GMV"],
+              ] as [string, string, string][]).map(([n, zh, en]) => (
+                <div key={zh}>
+                  <p className="font-black" style={{ color: NEON, fontSize: "clamp(1.7rem, 3.2vw, 2.2rem)" }}>{n}</p>
+                  <p className="text-white/80 text-sm font-semibold mt-1">{zh}</p>
+                  <p className="text-white/40 text-xs">{en}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
 
-          <div className="rounded-2xl p-6 sm:p-8" style={cardStyle}>
-            <p className="text-white/60 text-sm mb-5">Group 1 — Product info as main card</p>
+          <GlassCard>
+            <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-4">实验组1 · 商品信息做主卡 / Product as main card (control)</p>
             <div className="grid sm:grid-cols-3 gap-6">
-              {[
-                ["+0.905%", "Single-column entry rate"],
-                ["+0.937%", "Non-auto view sessions"],
-                ["-0.133%", "Live-room overall GMV"],
-              ].map(([n, l]) => (
-                <div key={l}>
-                  <p className="font-black text-white/70" style={{ fontSize: "clamp(1.4rem, 2.6vw, 1.7rem)" }}>{n}</p>
-                  <p className="text-white/40 text-sm mt-1">{l}</p>
+              {([
+                ["+0.905%", "单列发现进间率", "Single-column entry rate"],
+                ["+0.937%", "非自动观看次数", "Non-auto view sessions"],
+                ["-0.133%", "整体去风极GMV", "E-commerce live-room GMV (flat)"],
+              ] as [string, string, string][]).map(([n, zh, en]) => (
+                <div key={zh}>
+                  <p className="font-black text-white/55" style={{ fontSize: "clamp(1.5rem, 2.8vw, 1.9rem)" }}>{n}</p>
+                  <p className="text-white/50 text-sm mt-1">{zh}</p>
+                  <p className="text-white/30 text-xs">{en}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
         </Reveal>
 
-        {/* Footer back */}
-        <div className="text-center mt-20">
-          <button
-            onClick={goHome}
+        <div className="text-center mt-24">
+          <button onClick={goHome}
             className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity"
             style={{ color: NEON }}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.7"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-          >
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.65"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}>
             ← Back to Home
           </button>
         </div>
