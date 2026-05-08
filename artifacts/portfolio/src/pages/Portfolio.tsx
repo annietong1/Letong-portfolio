@@ -20,9 +20,10 @@ function useReveal() {
   return ref;
 }
 
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+function Reveal({ children, delay = 0, className = "", dir = "up" }: { children: React.ReactNode; delay?: number; className?: string; dir?: "up" | "left" | "right" }) {
   const ref = useReveal();
-  return <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>{children}</div>;
+  const base = dir === "left" ? "reveal-left" : dir === "right" ? "reveal-right" : "reveal";
+  return <div ref={ref} className={`${base} ${className}`} style={{ transitionDelay: `${delay}ms` }}>{children}</div>;
 }
 
 /* ── Animated counter ──────────────────────────────────────────── */
@@ -650,14 +651,45 @@ function Contact() {
 
 /* ── Project Detail helpers ────────────────────────────────────── */
 function DetailImg({ src, alt, noBorder }: { src: string; alt: string; noBorder?: boolean }) {
+  if (noBorder) {
+    return (
+      <Reveal>
+        <img src={src} alt={alt} loading="lazy" className="w-full my-8" style={{ display: "block" }} />
+      </Reveal>
+    );
+  }
   return (
     <Reveal>
       <div className="rounded-2xl overflow-hidden my-10"
-        style={noBorder ? {} : { border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
         <img src={src} alt={alt} loading="lazy"
           style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
     </Reveal>
+  );
+}
+
+/* ── Animated decimal stat for metrics ───── */
+function AnimatedStat({ value, label, bright = false, delay = 0 }: { value: string; label: string; bright?: boolean; delay?: number }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const ob = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.4 });
+    if (ref.current) ob.observe(ref.current);
+    return () => ob.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? "none" : "translateY(18px)",
+      transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+    }}>
+      <p className={bright ? "neon-glow font-black" : "font-black"}
+        style={{ color: bright ? NEON : "rgba(255,255,255,0.5)", fontSize: "clamp(1.7rem, 3.2vw, 2.2rem)" }}>
+        {value}
+      </p>
+      <p className="text-sm mt-1" style={{ color: bright ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.38)" }}>{label}</p>
+    </div>
   );
 }
 
@@ -707,11 +739,21 @@ function CardTypeHeader({ label, color = NEON, bullets }: { label: string; color
 function ProjectDetail({ title }: { title: string }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   const goHome = () => { window.location.hash = ""; };
+  const [scrollPct, setScrollPct] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement;
+      setScrollPct((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const p = FEATURED.find((f) => f.title === title);
   const displayTitle = (p as { enTitle?: string } & typeof FEATURED[0])?.enTitle ?? title;
 
   return (
     <div style={{ background: BG, minHeight: "100vh" }}>
+      <div className="scroll-progress" style={{ width: `${scrollPct}%` }} />
       <Navbar />
       <main className="max-w-5xl mx-auto px-6 pt-10 pb-28">
 
@@ -746,28 +788,39 @@ function ProjectDetail({ title }: { title: string }) {
         <DetailImg src="/provided-img1.png" alt="Before vs After — single card to composite card" noBorder />
 
         {/* Before / After */}
-        <Reveal>
-          <div className="grid sm:grid-cols-2 gap-4 mb-6">
-            <GlassCard>
+        <div className="grid sm:grid-cols-2 gap-4 mb-10">
+          <Reveal dir="left">
+            <GlassCard className="detail-hover h-full">
               <p className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">Before — Single Card</p>
               <p className="text-white/75 text-sm leading-relaxed">
                 Either product info <em>or</em> a marketing campaign — only one type at a time.
               </p>
             </GlassCard>
-            <GlassCard neon>
+          </Reveal>
+          <Reveal dir="right" delay={80}>
+            <GlassCard neon className="detail-hover h-full">
               <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: NEON }}>After — Composite Card</p>
               <p className="text-white/80 text-sm leading-relaxed">
                 Both product and marketing signals in one card, maximising benefit-point density.
               </p>
             </GlassCard>
-          </div>
-          <p className="text-center text-sm text-white/45">
-            Goal —{" "}
-            <span className="text-white font-semibold">show <span style={{ color: NEON }}>combined benefit points</span> within limited card space</span>
-          </p>
-        </Reveal>
+          </Reveal>
+        </div>
 
-        <DetailImg src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" noBorder />
+        {/* Goal callout + framework anatomy image */}
+        <Reveal>
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(181,242,61,0.12)", background: "rgba(181,242,61,0.02)" }}>
+            <div className="px-6 pt-5 pb-4 text-center">
+              <p className="text-xs font-black tracking-widest uppercase mb-1" style={{ color: NEON }}>Framework Goal</p>
+              <p className="text-sm text-white/55">
+                Show{" "}
+                <span className="text-white font-semibold"><span style={{ color: NEON }}>combined benefit points</span> within limited card space</span>
+              </p>
+            </div>
+            <img src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" loading="lazy"
+              style={{ width: "100%", display: "block" }} />
+          </div>
+        </Reveal>
 
         {/* Validation */}
         <Reveal>
@@ -791,22 +844,20 @@ function ProjectDetail({ title }: { title: string }) {
         {/* SECTION 1 — FRAMEWORK */}
         <SectionDivider num="1" zh="" en="Framework"
           sub="Allocate visual weight between main and sub cards. Settled on an 8 : 2 ratio — main card prominent enough to attract, sub card visible enough to inform." />
-        <Reveal>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <GlassCard>
-              <p className="font-bold text-white text-sm mb-1">Structure</p>
-              <p className="text-white/45 text-xs leading-relaxed">Balance main card prominence vs sub card recognisability</p>
-            </GlassCard>
-            <GlassCard neon>
-              <p className="font-bold text-sm mb-1" style={{ color: NEON }}>8 : 2</p>
-              <p className="text-white/55 text-xs leading-relaxed">Main card: core attraction · Sub card: supplementary info</p>
-            </GlassCard>
-            <GlassCard>
-              <p className="font-bold text-white text-sm mb-1">Main / Sub</p>
-              <p className="text-white/45 text-xs leading-relaxed">Main drives desire · Sub reinforces decision</p>
-            </GlassCard>
-          </div>
-        </Reveal>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {([
+            { title: "Structure", body: "Balance main card prominence vs sub card recognisability", neon: false },
+            { title: "8 : 2", body: "Main card: core attraction · Sub card: supplementary info", neon: true },
+            { title: "Main / Sub", body: "Main drives desire · Sub reinforces decision", neon: false },
+          ] as { title: string; body: string; neon: boolean }[]).map((item, i) => (
+            <Reveal key={item.title} delay={i * 110}>
+              <GlassCard neon={item.neon} className="detail-hover h-full">
+                <p className="font-bold text-sm mb-1" style={{ color: item.neon ? NEON : "white" }}>{item.title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: item.neon ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.45)" }}>{item.body}</p>
+              </GlassCard>
+            </Reveal>
+          ))}
+        </div>
 
         {/* SECTION 2 — CONTENT */}
         <SectionDivider num="2" zh="" en="Content"
@@ -983,11 +1034,8 @@ function ProjectDetail({ title }: { title: string }) {
                 ["+1.145%", "Single-column entry rate"],
                 ["+1.129%", "Non-auto view sessions"],
                 ["+0.983%", "E-commerce GMV"],
-              ] as [string, string][]).map(([n, label]) => (
-                <div key={label}>
-                  <p className="font-black" style={{ color: NEON, fontSize: "clamp(1.7rem, 3.2vw, 2.2rem)" }}>{n}</p>
-                  <p className="text-white/70 text-sm mt-1">{label}</p>
-                </div>
+              ] as [string, string][]).map(([n, label], i) => (
+                <AnimatedStat key={label} value={n} label={label} bright delay={i * 120} />
               ))}
             </div>
           </GlassCard>
@@ -999,15 +1047,58 @@ function ProjectDetail({ title }: { title: string }) {
                 ["+0.905%", "Single-column entry rate"],
                 ["+0.937%", "Non-auto view sessions"],
                 ["-0.133%", "E-commerce GMV"],
-              ] as [string, string][]).map(([n, label]) => (
-                <div key={label}>
-                  <p className="font-black text-white/55" style={{ fontSize: "clamp(1.5rem, 2.8vw, 1.9rem)" }}>{n}</p>
-                  <p className="text-white/40 text-sm mt-1">{label}</p>
-                </div>
+              ] as [string, string][]).map(([n, label], i) => (
+                <AnimatedStat key={label} value={n} label={label} delay={i * 120} />
               ))}
             </div>
           </GlassCard>
         </Reveal>
+
+        {/* DESIGN VALUE */}
+        <div className="mt-20 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+          <Reveal>
+            <div className="mb-8">
+              <p className="font-black tracking-[0.3em] text-xs mb-3" style={{ color: NEON }}>DESIGN VALUE</p>
+              <h2 className="font-black text-white" style={{ fontSize: "clamp(1.7rem, 3.5vw, 2.4rem)" }}>
+                What This Design Delivers
+              </h2>
+            </div>
+          </Reveal>
+          <div className="grid sm:grid-cols-3 gap-5">
+            {([
+              {
+                num: "01",
+                title: "Information Density",
+                body: "Composite card layout presents more categories of information within the same space — replacing single-focus cards.",
+                icon: "▣",
+              },
+              {
+                num: "02",
+                title: "Clear Hierarchy",
+                body: "The 8:2 framework distinguishes primary from secondary content, defining a clear viewing path for each user.",
+                icon: "⊞",
+              },
+              {
+                num: "03",
+                title: "Scalability",
+                body: "Primary and secondary card types can be flexibly replaced, preserving room for future version iterations.",
+                icon: "◈",
+              },
+            ] as { num: string; title: string; body: string; icon: string }[]).map((item, i) => (
+              <Reveal key={item.num} delay={i * 120}>
+                <div className="detail-hover rounded-2xl p-6 h-full flex flex-col gap-3"
+                  style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div className="flex items-center gap-3">
+                    <span className="font-black text-xs px-2.5 py-1 rounded-full shrink-0"
+                      style={{ background: NEON, color: BG }}>{item.num}</span>
+                    <span className="font-bold text-white text-sm">{item.title}</span>
+                  </div>
+                  <p className="text-white/50 text-sm leading-relaxed">{item.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
 
         <div className="text-center mt-24">
           <button onClick={goHome}

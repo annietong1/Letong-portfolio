@@ -102,6 +102,50 @@
 .project-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .project-card:hover { transform: translateY(-6px); }
 
+/* ── Detail page card hover ─────────────── */
+.detail-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+.detail-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(181,242,61,0.07);
+}
+
+/* ── Scroll progress bar ─────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--neon);
+  z-index: 200;
+  transition: width 0.12s linear;
+  box-shadow: 0 0 8px rgba(181,242,61,0.55);
+  pointer-events: none;
+}
+
+/* ── Horizontal slide reveal ─────────────── */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* ── Neon number pulse ───────────────────── */
+@keyframes neonGlow {
+  0%, 100% { text-shadow: 0 0 0px rgba(181,242,61,0); }
+  50%       { text-shadow: 0 0 20px rgba(181,242,61,0.45); }
+}
+.neon-glow { animation: neonGlow 3s ease-in-out infinite; }
+
 /* ── UI Wall scroll ──────────────────────── */
 @keyframes wallScroll {
   from { transform: translateX(0); }
