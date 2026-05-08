@@ -701,6 +701,67 @@ const GlassCard: React.FC<React.PropsWithChildren<{ neon?: boolean; className?: 
   }}>{children}</div>
 );
 
+/* ── Side TOC ──────────────────────────────────────────────────── */
+const TOC_ITEMS = [
+  { id: "sec-framework",   label: "Framework" },
+  { id: "sec-content",     label: "Content" },
+  { id: "sec-experiments", label: "Experiments" },
+  { id: "sec-results",     label: "Results" },
+];
+
+function useSectionHighlight() {
+  const [active, setActive] = useState("sec-framework");
+  useEffect(() => {
+    const obs = TOC_ITEMS.map(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const ob = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) setActive(id); },
+        { rootMargin: "-25% 0px -65% 0px" }
+      );
+      ob.observe(el);
+      return ob;
+    });
+    return () => obs.forEach((ob) => ob?.disconnect());
+  }, []);
+  return active;
+}
+
+function SectionNav() {
+  const active = useSectionHighlight();
+  return (
+    <nav className="hidden xl:flex flex-col gap-5 items-end"
+      style={{ position: "fixed", right: "2.5rem", top: "50%", transform: "translateY(-50%)", zIndex: 50 }}>
+      {TOC_ITEMS.map(({ id, label }) => {
+        const on = active === id;
+        return (
+          <button key={id}
+            onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="flex items-center gap-2.5"
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <span className="text-xs font-semibold"
+              style={{
+                color: on ? NEON : "rgba(255,255,255,0.28)",
+                opacity: on ? 1 : 0,
+                transform: on ? "translateX(0)" : "translateX(6px)",
+                transition: "opacity 0.3s ease, transform 0.3s ease, color 0.3s ease",
+                whiteSpace: "nowrap",
+              }}>
+              {label}
+            </span>
+            <div style={{
+              width: on ? 20 : 5, height: 2,
+              background: on ? NEON : "rgba(255,255,255,0.16)",
+              borderRadius: 2, flexShrink: 0,
+              transition: "width 0.3s ease, background 0.3s ease",
+            }} />
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 function SectionDivider({ num, zh, en, sub }: { num: string; zh: string; en: string; sub?: string }) {
   return (
     <Reveal>
@@ -752,8 +813,9 @@ function ProjectDetail({ title }: { title: string }) {
   const displayTitle = (p as { enTitle?: string } & typeof FEATURED[0])?.enTitle ?? title;
 
   return (
-    <div style={{ background: BG, minHeight: "100vh" }}>
+    <div className="page-in" style={{ background: BG, minHeight: "100vh" }}>
       <div className="scroll-progress" style={{ width: `${scrollPct}%` }} />
+      <SectionNav />
       <Navbar />
       <main className="max-w-5xl mx-auto px-6 pt-10 pb-28">
 
@@ -783,6 +845,17 @@ function ProjectDetail({ title }: { title: string }) {
           <p className="text-white/50 text-center max-w-xl mx-auto leading-relaxed text-sm">
             A new entry-card framework for high-exposure live-room scenarios — surfacing combined product and marketing signals to drive entry rate.
           </p>
+          <div className="flex items-center justify-center gap-5 mt-5">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>Role</span>
+              <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>独立设计</span>
+            </div>
+            <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.12)" }} />
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.28)" }}>Time</span>
+              <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>2025.6</span>
+            </div>
+          </div>
         </Reveal>
 
         <DetailImg src="/provided-img1.png" alt="Before vs After — single card to composite card" noBorder />
@@ -807,18 +880,21 @@ function ProjectDetail({ title }: { title: string }) {
           </Reveal>
         </div>
 
-        {/* Goal callout + framework anatomy image */}
+        {/* Goal + framework anatomy image */}
         <Reveal>
-          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(181,242,61,0.12)", background: "rgba(181,242,61,0.02)" }}>
-            <div className="px-6 pt-5 pb-4 text-center">
-              <p className="text-xs font-black tracking-widest uppercase mb-1" style={{ color: NEON }}>Framework Goal</p>
-              <p className="text-sm text-white/55">
-                Show{" "}
-                <span className="text-white font-semibold"><span style={{ color: NEON }}>combined benefit points</span> within limited card space</span>
-              </p>
+          <div className="mt-8">
+            <div className="flex items-start gap-3 mb-5">
+              <div style={{ width: 3, alignSelf: "stretch", minHeight: 28, background: NEON, borderRadius: 2, flexShrink: 0 }} />
+              <div>
+                <p className="text-xs font-black tracking-widest uppercase mb-1.5" style={{ color: NEON }}>Framework Goal</p>
+                <p className="text-white/60 text-sm leading-relaxed">
+                  Show <span className="text-white font-semibold"><span style={{ color: NEON }}>combined benefit points</span> within limited card space</span> — the composite card is the vehicle.
+                </p>
+              </div>
             </div>
             <img src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" loading="lazy"
-              style={{ width: "100%", display: "block" }} />
+              className="w-full rounded-2xl"
+              style={{ display: "block", border: "1px solid rgba(255,255,255,0.06)" }} />
           </div>
         </Reveal>
 
@@ -842,6 +918,7 @@ function ProjectDetail({ title }: { title: string }) {
         </Reveal>
 
         {/* SECTION 1 — FRAMEWORK */}
+        <div id="sec-framework">
         <SectionDivider num="1" zh="" en="Framework"
           sub="Allocate visual weight between main and sub cards. Settled on an 8 : 2 ratio — main card prominent enough to attract, sub card visible enough to inform." />
         <div className="grid sm:grid-cols-3 gap-4">
@@ -858,8 +935,10 @@ function ProjectDetail({ title }: { title: string }) {
             </Reveal>
           ))}
         </div>
+        </div>{/* /sec-framework */}
 
         {/* SECTION 2 — CONTENT */}
+        <div id="sec-content">
         <SectionDivider num="2" zh="" en="Content"
           sub="Fill the framework with typed content. Info must fit and read clearly on the main card, and be recognisable on the sub card." />
 
@@ -988,7 +1067,10 @@ function ProjectDetail({ title }: { title: string }) {
           </div>
         </Reveal>
 
+        </div>{/* /sec-content */}
+
         {/* SECTION 3 — EXPERIMENTS */}
+        <div id="sec-experiments">
         <SectionDivider num="3" zh="" en="Experiments"
           sub="4 main-card types × 4 sub-card types form a combinable material library. Two A/B groups test the key question: product or marketing as the primary hook?" />
 
@@ -1010,7 +1092,10 @@ function ProjectDetail({ title }: { title: string }) {
           </div>
         </Reveal>
 
+        </div>{/* /sec-experiments */}
+
         {/* RESULTS */}
+        <div id="sec-results">
         <Reveal>
           <div className="text-center mt-16 mb-10">
             <p className="font-black tracking-[0.3em] text-xs mb-3" style={{ color: NEON }}>RESULTS</p>
@@ -1054,8 +1139,10 @@ function ProjectDetail({ title }: { title: string }) {
           </GlassCard>
         </Reveal>
 
+        </div>{/* /sec-results */}
+
         {/* DESIGN VALUE */}
-        <div className="mt-20 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="mt-20">
           <Reveal>
             <div className="mb-8">
               <p className="font-black tracking-[0.3em] text-xs mb-3" style={{ color: NEON }}>DESIGN VALUE</p>
