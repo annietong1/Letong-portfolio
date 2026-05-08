@@ -743,7 +743,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/f8-new.jpg" alt="Before vs After — single card to composite card" />
+        <DetailImg src="/provided-img1.png" alt="Before vs After — single card to composite card" />
 
         {/* Before / After */}
         <Reveal>
@@ -767,7 +767,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/f9-new.jpg" alt="Framework structure — 8:2 main/sub card ratio" />
+        <DetailImg src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" />
 
         {/* Validation */}
         <Reveal>
@@ -812,8 +812,6 @@ function ProjectDetail({ title }: { title: string }) {
         <SectionDivider num="2" zh="" en="Content"
           sub="Fill the framework with typed content. Info must fit and read clearly on the main card, and be recognisable on the sub card." />
 
-        <DetailImg src="/f10-new.jpg" alt="Content taxonomy — 4 card types across Product Info and Marketing Info" />
-
         <Reveal>
           <div className="grid sm:grid-cols-2 gap-4 mb-6">
             <GlassCard>
@@ -845,17 +843,52 @@ function ProjectDetail({ title }: { title: string }) {
           </div>
         </Reveal>
 
-        <CardTypeHeader label="Standard Product Card" bullets={[
-          "Image, title, selling points, CTA — priority: in-room bestseller › ranking › price › anchor points › reviews",
-          "Two status modes: presenter active / recommendation",
-        ]} />
-        <DetailImg src="/f11-new.jpg" alt="Standard product card — wireframe, variants, and selling-point priority" />
-
-        <CardTypeHeader label="AI Summary Card" bullets={[
-          "Alternates with standard product in a carousel",
-          "Avatar composite boosts authenticity; 24–28 char condensed summary as selling-point magnifier",
-        ]} />
-        <DetailImg src="/f12-new.jpg" alt="AI Summary card — structure and phone mockups" />
+        <Reveal>
+          <div className="grid lg:grid-cols-2 gap-10 items-center mt-8">
+            <div className="space-y-10">
+              {/* Standard Product Card */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="font-black text-xs px-2.5 py-1 rounded-full shrink-0"
+                    style={{ background: NEON, color: BG }}>01</span>
+                  <span className="font-black text-white text-lg tracking-tight">Standard Product Card</span>
+                </div>
+                <ul className="space-y-2 pl-1">
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Image, title, selling points, CTA — priority: in-room bestseller › ranking › price › anchor points › reviews
+                  </li>
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Two status modes: presenter active / recommendation
+                  </li>
+                </ul>
+              </div>
+              {/* AI Summary Card */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="font-black text-xs px-2.5 py-1 rounded-full shrink-0"
+                    style={{ border: `1.5px solid ${NEON}`, color: NEON, background: "transparent" }}>02</span>
+                  <span className="font-black text-white text-lg tracking-tight">AI Summary Card</span>
+                </div>
+                <ul className="space-y-2 pl-1">
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Alternates with standard product in a carousel
+                  </li>
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Avatar composite boosts authenticity; 24–28 char condensed summary as selling-point magnifier
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <img src="/provided-img3.png" alt="Standard and AI Summary card phone mockups"
+                className="w-full rounded-2xl" style={{ maxHeight: 600, objectFit: "contain" }} />
+            </div>
+          </div>
+        </Reveal>
 
         <CardTypeHeader label="Coupon Card" bullets={[
           "Shows face value, type, conditions, CTA — supports 3 tiers (¥9 / ¥9.9 / ¥999.9)",
