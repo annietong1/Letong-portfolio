@@ -649,11 +649,11 @@ function Contact() {
 }
 
 /* ── Project Detail helpers ────────────────────────────────────── */
-function DetailImg({ src, alt }: { src: string; alt: string }) {
+function DetailImg({ src, alt, noBorder }: { src: string; alt: string; noBorder?: boolean }) {
   return (
     <Reveal>
       <div className="rounded-2xl overflow-hidden my-10"
-        style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={noBorder ? {} : { border: "1px solid rgba(255,255,255,0.07)" }}>
         <img src={src} alt={alt} loading="lazy"
           style={{ width: "100%", height: "auto", display: "block" }} />
       </div>
@@ -743,7 +743,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/provided-img1.png" alt="Before vs After — single card to composite card" />
+        <DetailImg src="/provided-img1.png" alt="Before vs After — single card to composite card" noBorder />
 
         {/* Before / After */}
         <Reveal>
@@ -767,7 +767,7 @@ function ProjectDetail({ title }: { title: string }) {
           </p>
         </Reveal>
 
-        <DetailImg src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" />
+        <DetailImg src="/provided-img2.png" alt="Framework structure — 8:2 main/sub card ratio" noBorder />
 
         {/* Validation */}
         <Reveal>
@@ -890,23 +890,61 @@ function ProjectDetail({ title }: { title: string }) {
           </div>
         </Reveal>
 
-        <CardTypeHeader label="Coupon Card" bullets={[
-          "Shows face value, type, conditions, CTA — supports 3 tiers (¥9 / ¥9.9 / ¥999.9)",
-          "Animated value escalation (¥5 → ¥9 → ¥25) strengthens perceived incentive; includes gov-subsidy coupon type",
-        ]} />
-        <DetailImg src="/f13-new.jpg" alt="Coupon card — variety, animated value, phone mockup" />
-
-        <CardTypeHeader label="Lottery Card" bullets={[
-          "Lucky-bag animation tied to in-room draw; reinforces brand memory and experience consistency",
-          "Dynamic copy: countdown timer, participant count, win rate",
-        ]} />
-        <DetailImg src="/f14-new.jpg" alt="Lottery card — animation states and dynamic selling points" />
+        <Reveal>
+          <div className="grid lg:grid-cols-2 gap-10 items-center mt-8">
+            <div className="space-y-10">
+              {/* Coupon Card */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="font-black text-xs px-2.5 py-1 rounded-full shrink-0"
+                    style={{ background: NEON, color: BG }}>03</span>
+                  <span className="font-black text-white text-lg tracking-tight">Coupon Card</span>
+                </div>
+                <ul className="space-y-2 pl-1">
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Shows face value, type, conditions, CTA — supports 3 tiers (¥9 / ¥9.9 / ¥999.9)
+                  </li>
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Animated value escalation strengthens perceived incentive; includes gov-subsidy coupon type
+                  </li>
+                </ul>
+              </div>
+              {/* Lottery Card */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="font-black text-xs px-2.5 py-1 rounded-full shrink-0"
+                    style={{ border: `1.5px solid ${NEON}`, color: NEON, background: "transparent" }}>04</span>
+                  <span className="font-black text-white text-lg tracking-tight">Lottery Card</span>
+                </div>
+                <ul className="space-y-2 pl-1">
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Lucky-bag animation tied to in-room draw; reinforces brand memory and experience consistency
+                  </li>
+                  <li className="text-white/65 text-sm flex gap-2 leading-relaxed">
+                    <span className="shrink-0 mt-0.5" style={{ color: NEON }}>—</span>
+                    Dynamic copy: countdown timer, participant count, win rate
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <img src="/provided-img-coupon-lottery.png" alt="Coupon and Lottery card phone mockups"
+                className="w-full rounded-2xl" style={{ maxHeight: 600, objectFit: "contain" }} />
+            </div>
+          </div>
+        </Reveal>
 
         {/* SECTION 3 — EXPERIMENTS */}
         <SectionDivider num="3" zh="" en="Experiments"
           sub="4 main-card types × 4 sub-card types form a combinable material library. Two A/B groups test the key question: product or marketing as the primary hook?" />
 
-        <DetailImg src="/f15-new.jpg" alt="Combinable content material library — 4×4 combinations" />
+        <Reveal>
+          <img src="/provided-img-experiments.png" alt="Experiments — combinable material library and A/B groups"
+            className="w-full my-10 rounded-2xl" style={{ display: "block" }} />
+        </Reveal>
 
         <Reveal>
           <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -920,12 +958,6 @@ function ProjectDetail({ title }: { title: string }) {
             </GlassCard>
           </div>
         </Reveal>
-
-        <DetailImg src="/f16-new.jpg" alt="A/B Experiment Group 1 — Product info as main card" />
-
-        <DetailImg src="/f17-new.jpg" alt="A/B Experiment Group 2 — Marketing info as main card" />
-
-        <DetailImg src="/f18-new.jpg" alt="Step 1 data conclusions — composite card results" />
 
         {/* RESULTS */}
         <Reveal>
